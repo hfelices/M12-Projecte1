@@ -1,0 +1,106 @@
+/* For desktop: */
+.col-1 {width: 8.33%;}
+.col-2 {width: 16.66%;}
+.col-3 {width: 25%;}
+.col-4 {width: 33.33%;}
+.col-5 {width: 41.66%;}
+.col-6 {width: 50%;}
+.col-7 {width: 58.33%;}
+.col-8 {width: 66.66%;}
+.col-9 {width: 75%;}
+.col-10 {width: 83.33%;}
+.col-11 {width: 91.66%;}
+.col-12 {width: 100%;}
+
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.button-container{
+    display: flex;
+    justify-content:center;
+    align-items:center;
+    margin: 3vh 0;
+}
+.card-container{
+    display: flex;
+    justify-content: space-between;
+
+}
+
+/* Estilos de la tarjeta \/ */
+.card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-width: 300px;
+    padding: 16px;
+    text-align: center;
+    transition: transform 0.3s; /* Transición para el efecto hover */
+}
+
+.card img {
+    max-width: 100%;
+    border-radius: 8px;
+}
+
+.card-content {
+    margin-top: 16px;
+}
+
+.card h2 {
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.card p {
+    font-size: 1rem;
+}
+
+
+.card:hover {
+    transform: scale(1.05); 
+}
+
+/* Estilos de la tarjeta  /\ */
+
+/* Estilos boton plus  \/ */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.plus-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.button-text {
+    margin-right: 8px;
+}
+
+.plus-button:hover {
+    background-color: #0056b3;
+}
+
+/* Estilos boton plus  /\ */

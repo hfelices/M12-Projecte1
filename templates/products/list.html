@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../static/css/products.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="col-10 button-container">
+        <button class="plus-button">
+            <span class="button-text">+</span> Afegir
+        </button>
+    
+    </div>
+    
+    <div class="col-10 card-container">
+        
+        {% for product in items %}
+
+            <div class="card">
+                <img src="../../static/img/{{product['photo'] }}" alt="Descripción de la imagen">
+                <div class="card-content">
+                    <h2>{{ product['id'] }}-{{ product['title'] }}</h2>
+                    <p>{{ product['description'] }}</p>
+                    <p>{{ product['price'] }}€</p>
+                </div>
+            </div>
+        
+        {% endfor %}
+    </div>
+    
+</body>
+</html>
