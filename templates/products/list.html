@@ -29,7 +29,12 @@
                     <img src="../../static/uploads/{{product['photo'] }}" alt="Descripción de la imagen">
                     <div class="card-content">
                         <h2>{{ product['title'] }}</h2>
-                        <p>{{ product['description'] }}</p>
+                        {% if product['description']|length > 36 %}
+                            <p>{{ product['description'][:36] + '...' }}</p>
+                        {% else %}
+                           
+                            <p>{{ product['description'] }}</p>
+                        {% endif %}
                         <p>{{ product['price'] }}€</p>
                         <a href="products/update/{{ product['id'] }}">
                             <button class="edit-button">

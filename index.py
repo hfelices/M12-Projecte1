@@ -165,3 +165,14 @@ def delete_item(id):
         return redirect(url_for("item_list"))
 
     return render_template("/products/list.html")
+
+@app.route("/products/<int:id>", methods=["GET","POST"])
+def show_item(id):
+    product = Product.query.get_or_404(id)
+# TODO ----------------
+    if request.method == "GET":
+        db.session.delete(product)
+        db.session.commit()
+        return redirect(url_for("item_list"))
+
+    return render_template("/products/list.html")
