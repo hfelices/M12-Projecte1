@@ -7,59 +7,65 @@
     <title>Document</title>
 </head>
 <body>
-    {% if not product %}
-        <form method="POST" action="/products/create" enctype="multipart/form-data">
-            <label for="nombre">Nombre:</label>
-            <input type="text" id="nombre" name="nombre" required><br>
-        
-            <label for="descripcion">Descripción:</label>
-            <textarea id="descripcion" name="descripcion" rows="4" required></textarea><br>
-        
-            <label for="foto">Foto:</label>
-            <input type="file" id="foto" name="foto" accept="image/*"><br>
-        
-            <label for="precio">Precio:</label>
-            <input type="number" id="precio" name="precio" min="0" step="0.01" required><br>
-        
-            <label for="categoria">Categoría:</label>
-            <select id="categoria" name="categoria" required>
-                {% for category in categories %}
-                <option value="{{ category['id'] }}">{{ category['name'] }}</option>
-                {% endfor %}
-            <!-- Agrega más opciones según sea necesario -->
-            </select><br>
-        
-            <input type="submit" value="Enviar">
-            <input type="reset" value="Reiniciar">
-        </form>
-    {% else %}
-    <form method="POST" action="/products/update/{{ product['id'] }}" enctype="multipart/form-data">
-        <label for="nombre">Nombre:</label>
-        <input type="text" id="nombre" name="nombre" value="{{ product['title'] }}" required><br>
+    <header>
+        {% include './partials/header.html'%}
+    </header>
+    <main>
+        {% if not product %}
+            <form method="POST" action="/products/create" enctype="multipart/form-data">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" required><br>
+            
+                <label for="descripcion">Descripción:</label>
+                <textarea id="descripcion" name="descripcion" rows="4" required></textarea><br>
+            
+                <label for="foto">Foto:</label>
+                <input type="file" id="foto" name="foto" accept="image/*"><br>
+            
+                <label for="precio">Precio:</label>
+                <input type="number" id="precio" name="precio" min="0" step="0.01" required><br>
+            
+                <label for="categoria">Categoría:</label>
+                <select id="categoria" name="categoria" required>
+                    {% for category in categories %}
+                    <option value="{{ category['id'] }}">{{ category['name'] }}</option>
+                    {% endfor %}
+                <!-- Agrega más opciones según sea necesario -->
+                </select><br>
+            
+                <input type="submit" value="Enviar">
+                <input type="reset" value="Reiniciar">
+            </form>
+        {% else %}
+            <form method="POST" action="/products/update/{{ product['id'] }}" enctype="multipart/form-data">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" value="{{ product['title'] }}" required><br>
+            
+                <label for="descripcion">Descripción:</label>
+                <textarea id="descripcion" name="descripcion" rows="4" required>{{ product['description'] }}</textarea><br>
+                <label for="foto">Foto:</label>
+                <img src="../../static/uploads/{{ product['photo'] }}" alt="">
+                <input type="file" id="foto" name="foto" accept="image/*"><br>
+                <input type="hidden" id="photo" name="photo" value="{{ product['photo'] }}" required>
+                <label for="precio">Precio:</label>
+                <input type="number" id="precio" name="precio" min="0"  step="0.01" value="{{ product['price'] }}" required><br>
+            
+                <label for="categoria">Categoría:</label>
+                <select id="categoria" name="categoria" required>
+                    {% for category in categories %}
+                    <option value="{{ category['id'] }}" {% if category['id'] == product['category_id'] %}selected{% endif %}>
+                        {{ category['name'] }}
+                    </option>
+                    {% endfor %}
+                <!-- Agrega más opciones según sea necesario -->
+                </select><br>
+            
+                <input type="submit" value="Enviar">
+                <a href=""><input type="reset" value="Cancelar"></a>
+            </form>
+            
+        {% endif %} 
+    </main>
     
-        <label for="descripcion">Descripción:</label>
-        <textarea id="descripcion" name="descripcion" rows="4" required>{{ product['description'] }}</textarea><br>
-        <label for="foto">Foto:</label>
-        <img src="../../static/uploads/{{ product['photo'] }}" alt="">
-        <input type="file" id="foto" name="foto" accept="image/*"><br>
-        <input type="hidden" id="photo" name="photo" value="{{ product['photo'] }}" required>
-        <label for="precio">Precio:</label>
-        <input type="number" id="precio" name="precio" min="0"  step="0.01" value="{{ product['price'] }}" required><br>
-    
-        <label for="categoria">Categoría:</label>
-        <select id="categoria" name="categoria" required>
-            {% for category in categories %}
-            <option value="{{ category['id'] }}" {% if category['id'] == product['category_id'] %}selected{% endif %}>
-                {{ category['name'] }}
-            </option>
-            {% endfor %}
-        <!-- Agrega más opciones según sea necesario -->
-        </select><br>
-    
-        <input type="submit" value="Enviar">
-        <a href=""><input type="reset" value="Cancelar"></a>
-    </form>
-    
-    {% endif %} 
 </body>
 </html>

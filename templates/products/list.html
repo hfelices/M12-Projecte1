@@ -7,41 +7,45 @@
     <title>Document</title>
 </head>
 <body>
-    <div class="col-10 button-container">
-        <a href="/products/create">
-            <button class="plus-button">
-                <span class="button-text">+</span> Afegir
-            </button>
-        </a>
+    <header>
+        {% include './partials/header.html'%}
+    </header>
+    <main>
+        <div class="col-10 button-container">
+            <a href="/products/create">
+                <button class="plus-button">
+                    <span class="button-text">+</span> Afegir
+                </button>
+            </a>
+            
         
-    
-    </div>
-    
-    <div class="col-10 card-container">
+        </div>
         
-        {% for product in items %}
-
-            <div class="card">
-                <img src="../../static/uploads/{{product['photo'] }}" alt="Descripción de la imagen">
-                <div class="card-content">
-                    <h2>{{ product['title'] }}</h2>
-                    <p>{{ product['description'] }}</p>
-                    <p>{{ product['price'] }}€</p>
-                    <a href="products/update/{{ product['id'] }}">
-                        <button class="edit-button">
-                            <span class="button-text">✎</span> Editar
-                        </button>
-                    </a>
-                    <form action="products/delete/{{ product['id'] }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este producto?')">
-                        <button type="submit" class="delete-button">
-                            <span class="button-text">🗑</span> Eliminar
-                        </button>
-                    </form>
+        <div class="col-10 card-container">
+            
+            {% for product in items %}
+    
+                <div class="card">
+                    <img src="../../static/uploads/{{product['photo'] }}" alt="Descripción de la imagen">
+                    <div class="card-content">
+                        <h2>{{ product['title'] }}</h2>
+                        <p>{{ product['description'] }}</p>
+                        <p>{{ product['price'] }}€</p>
+                        <a href="products/update/{{ product['id'] }}">
+                            <button class="edit-button">
+                                <span class="button-text">✎</span> Editar
+                            </button>
+                        </a>
+                        <form action="products/delete/{{ product['id'] }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este producto?')">
+                            <button type="submit" class="delete-button">
+                                <span class="button-text">🗑</span> Eliminar
+                            </button>
+                        </form>
+                    </div>
                 </div>
-            </div>
-        
-        {% endfor %}
-    </div>
-    
+            
+            {% endfor %}
+        </div>
+    </main>
 </body>
 </html>
