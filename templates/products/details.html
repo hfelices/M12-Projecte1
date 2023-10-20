@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../static/css/details.css">
+    <link rel="stylesheet" href="../../static/css/products.css">
     <title>Document</title>
 </head>
 <body>
@@ -11,7 +11,26 @@
         {% include './partials/header.html'%}
     </header>
     <main>
-        
+        <div class="card">
+            <img src="../../static/uploads/{{item['photo'] }}" alt="Descripción de la imagen">
+            <div class="card-content">
+                <h2>{{ item['title'] }}</h2>
+                
+                    <p style="word-wrap: break-word;">{{ item['description'] }}</p>
+                
+                <p>{{ item['price'] }}€</p>
+                <a href="/products/update/{{ item['id'] }}">
+                    <button class="edit-button">
+                        <span class="button-text">✎</span> Editar
+                    </button>
+                </a>
+                <form action="/products/delete/{{ item['id'] }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este producto?')">
+                    <button type="submit" class="delete-button">
+                        <span class="button-text">🗑</span> Eliminar
+                    </button>
+                </form>
+            </div>
+        </div>
     </main>
 </body>
 </html>

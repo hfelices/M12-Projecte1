@@ -53,6 +53,9 @@ a{
     margin-bottom: 2em;
 }
 
+.listCard{
+    cursor: pointer;
+}
 .card img {
     width: 18em;
     height: 18em;
@@ -73,7 +76,7 @@ a{
 }
 
 
-.card:hover {
+.listCard:hover {
     transform: scale(1.05); 
 }
 

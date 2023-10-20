@@ -82,7 +82,12 @@ def get_table(table):
             res = con.execute(f"SELECT * from {table}")
             items = res.fetchall()
             return items
-            
+
+def get_item(id):
+    with get_db_connection() as con:
+            res = con.execute(f"SELECT * FROM products WHERE id={id}")
+            item = res.fetchone()
+            return item           
 
 @app.route('/products', methods=["GET","POST"])
 def item_list():
@@ -155,24 +160,29 @@ def update_item(id):
     return redirect(url_for('item_list'))
 
 
-@app.route("/products/delete/<int:id>", methods=["GET","POST"])
+@app.route("/products/delete/<int:id>", methods=["GET", "POST"])
 def delete_item(id):
-    product = Product.query.get_or_404(id)
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    product = cursor.execute("SELECT * FROM products WHERE id = ?", (id,)).fetchone()
+
+    if product is None:
+        return "Producto no encontrado", 404
 
     if request.method == "POST":
-        db.session.delete(product)
-        db.session.commit()
+        cursor.execute("DELETE FROM products WHERE id = ?", (id,))
+        conn.commit()
+        conn.close()
         return redirect(url_for("item_list"))
 
+    conn.close()
     return render_template("/products/list.html")
 
-@app.route("/products/<int:id>", methods=["GET","POST"])
+
+@app.route('/products/<int:id>', methods=["GET"])
 def show_item(id):
-    product = Product.query.get_or_404(id)
-# TODO ----------------
-    if request.method == "GET":
-        db.session.delete(product)
-        db.session.commit()
-        return redirect(url_for("item_list"))
-
-    return render_template("/products/list.html")
+    if request.method == 'GET':
+        item = get_item(id)
+        return render_template('products/details.html', item = item)
+    

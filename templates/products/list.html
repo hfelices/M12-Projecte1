@@ -24,8 +24,8 @@
         <div class="col-10 card-container">
             
             {% for product in items %}
-    
-                <div class="card">
+            <a href="products/{{ product['id'] }}" style="text-decoration: none; color: inherit;">
+                <div class="listCard card">
                     <img src="../../static/uploads/{{product['photo'] }}" alt="Descripción de la imagen">
                     <div class="card-content">
                         <h2>{{ product['title'] }}</h2>
@@ -36,19 +36,19 @@
                             <p>{{ product['description'] }}</p>
                         {% endif %}
                         <p>{{ product['price'] }}€</p>
-                        <a href="products/update/{{ product['id'] }}">
+                        <a href="/products/update/{{ product['id'] }}">
                             <button class="edit-button">
                                 <span class="button-text">✎</span> Editar
                             </button>
                         </a>
-                        <form action="products/delete/{{ product['id'] }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este producto?')">
+                        <form action="/products/delete/{{ product['id'] }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este producto?')">
                             <button type="submit" class="delete-button">
                                 <span class="button-text">🗑</span> Eliminar
                             </button>
                         </form>
                     </div>
                 </div>
-            
+            </a>
             {% endfor %}
         </div>
     </main>
