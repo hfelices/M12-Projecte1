@@ -5,13 +5,12 @@ from datetime import datetime
 from werkzeug.utils import secure_filename
 from . import db_manager as db
 from .models import Product, Category, User
-from .forms import ProductForm
+from .forms import ProductForm, DeleteProductForm
 # Comando para iniciar la app flask
 # flask --app .\index.py run
 
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 UPLOAD_FOLDER = 'app/static/uploads'
-
 
 # Blueprint
 main_bp = Blueprint(
@@ -22,7 +21,6 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-
 @main_bp.route("/")
 def hello_world():
     return redirect(url_for('main_bp.item_list'))
@@ -30,9 +28,10 @@ def hello_world():
 # Llistar productes
 @main_bp.route('/products', methods=["GET"])
 def item_list():
+    deleteForm = DeleteProductForm()
     if request.method == 'GET':
         items = Product.query.all()
-        return render_template('products/list.html', items=items)
+        return render_template('products/list.html', items=items, deleteForm=deleteForm)
 
 # Crear nou producte
 @main_bp.route('/products/create', methods=["GET", "POST"])
@@ -60,7 +59,6 @@ def create_item():
         return redirect(url_for('main_bp.item_list'))
     else: 
         return render_template('products/create-update-product.html', form = form)
-
 
 # Editar productes
 @main_bp.route('/products/update/<int:id>', methods=["GET", "POST"])
@@ -98,8 +96,9 @@ def update_item(id):
 @main_bp.route("/products/delete/<int:id>", methods=["POST"])
 def delete_item(id):
     product = Product.query.get_or_404(id)
-
-    if request.method == "POST":
+    form = DeleteProductForm(obj = product)
+    
+    if request.method == "POST" and form.validate_on_submit():
         db.session.delete(product)
         db.session.commit()
         return redirect(url_for("main_bp.item_list"))
@@ -109,6 +108,7 @@ def delete_item(id):
 # Detall de producte
 @main_bp.route('/products/<int:id>', methods=["GET"])
 def show_item(id):
+    deleteForm = DeleteProductForm()
     if request.method == 'GET':
         item = Product.query.get(id)
-        return render_template('products/details.html', item=item)
+        return render_template('products/details.html', item=item , deleteForm=deleteForm)

@@ -19,3 +19,7 @@ class ProductForm(FlaskForm):
         validators = [validators.InputRequired()]
         )  
     submit = SubmitField()
+    
+
+class DeleteProductForm(FlaskForm):
+    submit = SubmitField()

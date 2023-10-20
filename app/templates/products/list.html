@@ -40,10 +40,10 @@
                                 <span class="button-text">✎</span> Editar
                             </button>
                         </a>
+
                         <form action="/products/delete/{{ product['id'] }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este producto?')">
-                            <button type="submit" class="delete-button">
-                                <span class="button-text">🗑</span> Eliminar
-                            </button>
+                            {{ deleteForm.csrf_token }}
+                            <p>{{ deleteForm.submit(value="🗑 Eliminar", class="delete-button") }}</p>
                         </form>
                     </div>
                 </div>
