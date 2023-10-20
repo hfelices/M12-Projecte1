@@ -32,7 +32,6 @@
                         {% if product['description']|length > 34 %}
                             <p>{{ product['description'][:34] + '...' }}</p>
                         {% else %}
-                           
                             <p>{{ product['description'] }}</p>
                         {% endif %}
                         <p>{{ product['price'] }}€</p>

@@ -1,6 +1,20 @@
 # M12-Projecte1
-Aquest projecte conté un hello world fet amb flask
+Primer projecte de M12 amb Flask
 
-Per tal que funcioni cal instalar les dependències.
+### Crea l'entorn:
+
+>python3 -m venv .venv
+
+### Activa'l:
+
+>source .venv/bin/activate
+
+### Per tal que funcioni cal instalar les dependències:
+
 >pip install -r requirements.txt
 
+## Run
+
+Executa:
+
+>flask run --debug

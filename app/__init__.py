@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import os
+from flask_wtf.csrf import CSRFProtect
 
 db_manager = SQLAlchemy()
 DATABASE = 'database.db'
@@ -14,9 +15,12 @@ def create_app():
     # app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + basedir + "/" + DATABASE
     app.config["SQLALCHEMY_ECHO"] = True
+    app.config["SECRET_KEY"] = "1234"
 
     db_manager.init_app(app)
 
+    # csrf = CSRFProtect(app)
+    # csrf.init_app(app)
     with app.app_context():
         from . import routes_main
 

@@ -5,6 +5,7 @@ from datetime import datetime
 from werkzeug.utils import secure_filename
 from . import db_manager as db
 from .models import Product, Category, User
+from .forms import ProductForm
 # Comando para iniciar la app flask
 # flask --app .\index.py run
 
@@ -36,35 +37,29 @@ def item_list():
 # Crear nou producte
 @main_bp.route('/products/create', methods=["GET", "POST"])
 def create_item():
-    if request.method == 'GET':
-        categories = Category.query.all()
-        return render_template('products/create-update-product.html', categories=categories)
-    elif request.method == 'POST':
-        form_data = request.form
-        file = request.files.get("foto")
+    categories = Category.query.all()
+    form = ProductForm()
+    form.category_id.choices=[(categoria.name) for categoria in categories]
+    if form.validate_on_submit(): # si s'ha fet submit al formulari
+        # he de crear un nou item
         
+        # dades del formulari a l'objecte item
+        new_product = Product()
+        form.populate_obj(new_product)
+        # insert!
+        
+        file = form.photo.data
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
+            new_product.photo = filename
             file.save(os.path.join(UPLOAD_FOLDER, filename))
-            photo = filename
-        else:
-            photo = None  
-
-        new_product = Product(
-            title=form_data["nombre"],
-            description=form_data["descripcion"],
-            photo=photo,
-            price=form_data["precio"],
-            category_id=form_data["categoria"],
-            seller_id='1',  
-            created=datetime.utcnow(),
-            updated=datetime.utcnow()
-        )
 
         db.session.add(new_product)
         db.session.commit()
-
-    return redirect(url_for('main_bp.item_list'))
+        
+        return redirect(url_for('main_bp.item_list'))
+    else: 
+        return render_template('products/create-update-product.html', form = form)
 
 
 # Editar productes
