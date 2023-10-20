@@ -29,8 +29,8 @@
                     <img src="../../static/uploads/{{product['photo'] }}" alt="Descripción de la imagen">
                     <div class="card-content">
                         <h2>{{ product['title'] }}</h2>
-                        {% if product['description']|length > 36 %}
-                            <p>{{ product['description'][:36] + '...' }}</p>
+                        {% if product['description']|length > 34 %}
+                            <p>{{ product['description'][:34] + '...' }}</p>
                         {% else %}
                            
                             <p>{{ product['description'] }}</p>
