@@ -5,6 +5,8 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from werkzeug.utils import secure_filename
 
+# Comando para iniciar la app flask
+# flask --app .\index.py run
 
 app = Flask(__name__)
 
@@ -15,10 +17,11 @@ ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 def now(): return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-basedir = os.path.abspath(os.path.dirname(__file__)) 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + basedir + "/" + DATABASE
-
 app.config["SQLALCHEMY_ECHO"] = True
+
+basedir = os.path.abspath(os.path.dirname(__file__)) 
+
 
 db = SQLAlchemy()
 db.init_app(app)
@@ -59,130 +62,96 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-
-
-# Comando para iniciar la app flask
-# flask --app .\index.py run
-
 @app.route("/")
 def hello_world():
     return redirect(url_for('item_list'))
 
-
-
-def get_db_connection():
-
-    con = sqlite3.connect(DATABASE)
-    # https://docs.python.org/3/library/sqlite3.html#how-to-create-and-use-row-factories
-    con.row_factory = sqlite3.Row
-    return con
-
-def get_table(table):
-    with get_db_connection() as con:
-            res = con.execute(f"SELECT * from {table}")
-            items = res.fetchall()
-            return items
-
-def get_item(id):
-    with get_db_connection() as con:
-            res = con.execute(f"SELECT * FROM products WHERE id={id}")
-            item = res.fetchone()
-            return item           
-
-@app.route('/products', methods=["GET","POST"])
+# Llistar productes
+@app.route('/products', methods=["GET"])
 def item_list():
     if request.method == 'GET':
-        items = get_table('products')
-        return render_template('products/list.html', items = items)
-    elif request.method == 'POST':
-        print('POST')
+        items = Product.query.all()
+        return render_template('products/list.html', items=items)
 
-
-@app.route('/products/create', methods=["GET","POST"])
+# Crear nou producte
+@app.route('/products/create', methods=["GET", "POST"])
 def create_item():
     if request.method == 'GET':
-        items = get_table('categories')
-        return render_template('products/create-update-product.html', categories = items)
+        categories = Category.query.all()
+        return render_template('products/create-update-product.html', categories=categories)
     elif request.method == 'POST':
-        d = request.form
-        file = request.files["foto"]
+        form_data = request.form
+        file = request.files.get("foto")
+        
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            
-        with get_db_connection() as con:
-            cursor = con.cursor()
-            sentencia_sql = '''
-    INSERT INTO products (title, description,photo,price,category_id,seller_id,created,updated)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-'''
-            dades=(d["nombre"], d["descripcion"], file.filename, d["precio"], d["categoria"], '1', now(),now())
-            cursor.execute(sentencia_sql,dades)
-            con.commit()
-            
+            photo = filename
+        else:
+            photo = None  # Otra opción podría ser usar la foto por defecto o lanzar un error
+
+        new_product = Product(
+            title=form_data["nombre"],
+            description=form_data["descripcion"],
+            photo=photo,
+            price=form_data["precio"],
+            category_id=form_data["categoria"],
+            seller_id='1',  # Aquí deberías establecer el ID del vendedor adecuado
+            created=datetime.utcnow(),
+            updated=datetime.utcnow()
+        )
+
+        db.session.add(new_product)
+        db.session.commit()
 
     return redirect(url_for('item_list'))
 
 
-
-@app.route('/products/update/<int:id>', methods=["GET","POST"])
+# Editar productes
+@app.route('/products/update/<int:id>', methods=["GET", "POST"])
 def update_item(id):
     if request.method == 'GET':
-        items = get_table('categories')
-        with get_db_connection() as con:    
-            res = con.execute(f"SELECT * from  products where id =?",(id,))
-            product =  res.fetchone()
-            app.logger.info(product)
-        return render_template('products/create-update-product.html', categories = items, product = product)
+        categories = Category.query.all()
+        product = Product.query.get_or_404(id)
+        return render_template('products/create-update-product.html', categories=categories, product=product)
     elif request.method == 'POST':
-        d = request.form
-        if request.files["foto"]:
-            file = request.files["foto"]
-            if file and allowed_file(file.filename):
-                filename = secure_filename(file.filename)
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                photo = file.filename
+        form_data = request.form
+        file = request.files.get("foto")
+        
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            photo = filename
         else:
-                photo = request.form["photo"]
-        with get_db_connection() as con:
-            cursor = con.cursor()
-            sentencia_sql = f'''
-        UPDATE products
-        SET title = ?, description = ?, photo = ?, price = ?, category_id = ?,
-            seller_id = ?, updated = ?
-        WHERE id = {id}
-    '''
-            dades = (d["nombre"], d["descripcion"], photo, d["precio"], d["categoria"], '1', now())
-            cursor.execute(sentencia_sql,dades)
-            con.commit()
-            
+            photo = form_data["photo"]
+
+        product = Product.query.get_or_404(id)
+        product.title = form_data["nombre"]
+        product.description = form_data["descripcion"]
+        product.photo = photo
+        product.price = form_data["precio"]
+        product.category_id = form_data["categoria"]
+        product.updated = datetime.utcnow()
+
+        db.session.commit()
 
     return redirect(url_for('item_list'))
 
-
-@app.route("/products/delete/<int:id>", methods=["GET", "POST"])
+# Eliminar productes
+@app.route("/products/delete/<int:id>", methods=["POST"])
 def delete_item(id):
-    conn = get_db_connection()
-    cursor = conn.cursor()
-
-    product = cursor.execute("SELECT * FROM products WHERE id = ?", (id,)).fetchone()
-
-    if product is None:
-        return "Producto no encontrado", 404
+    product = Product.query.get_or_404(id)
 
     if request.method == "POST":
-        cursor.execute("DELETE FROM products WHERE id = ?", (id,))
-        conn.commit()
-        conn.close()
+        db.session.delete(product)
+        db.session.commit()
         return redirect(url_for("item_list"))
 
-    conn.close()
     return render_template("/products/list.html")
 
-
+# Detall de producte
 @app.route('/products/<int:id>', methods=["GET"])
 def show_item(id):
     if request.method == 'GET':
-        item = get_item(id)
-        return render_template('products/details.html', item = item)
-    
+        item = Product.query.get(id)
+        return render_template('products/details.html', item=item)
