@@ -65,28 +65,30 @@ def create_item():
 # Editar productes
 @main_bp.route('/products/update/<int:id>', methods=["GET", "POST"])
 def update_item(id):
-    if request.method == 'GET':
-        categories = Category.query.all()
-        product = Product.query.get_or_404(id)
-        return render_template('products/create-update-product.html', categories=categories, product=product)
-    elif request.method == 'POST':
-        form_data = request.form
-        file = request.files.get("foto")
+    categories = Category.query.all()
+    product = Product.query.get_or_404(id)
+    form = ProductForm(obj = product)
+    form.category_id.choices=[(categoria.name) for categoria in categories]
         
+    if request.method == 'GET' :
+        categories = Category.query.all()
+        
+        return render_template('products/create-update-product.html', categories=categories, product=product, form = form)
+    elif request.method == 'POST' and form.validate_on_submit():
+        # he de crear un nou item
+        
+        # dades del formulari a l'objecte item
+        new_product = Product.query.get_or_404(id)
+        form.populate_obj(new_product)
+        # insert!
+        
+        file = form.photo.data
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
+            new_product.photo = filename
             file.save(os.path.join(UPLOAD_FOLDER, filename))
-            photo = filename
-        else:
-            photo = form_data["photo"]
-
-        product = Product.query.get_or_404(id)
-        product.title = form_data["nombre"]
-        product.description = form_data["descripcion"]
-        product.photo = photo
-        product.price = form_data["precio"]
-        product.category_id = form_data["categoria"]
-        product.updated = datetime.utcnow()
+        
+        new_product.updated = datetime.utcnow()
 
         db.session.commit()
 
