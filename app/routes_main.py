@@ -1,12 +1,17 @@
 from flask import Flask ,Blueprint, render_template, flash, redirect, url_for, request
 import os
+import csv
+from io import TextIOWrapper
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from werkzeug.utils import secure_filename
 from . import db_manager as db
 from .models import Product, Category, User
 from .forms import ProductForm, DeleteProductForm
-from .config import ALLOWED_EXTENSIONS, UPLOAD_FOLDER
+from .config import Config
+
+ALLOWED_EXTENSIONS = Config.ALLOWED_EXTENSIONS
+UPLOAD_FOLDER = Config.UPLOAD_FOLDER
 # Comando para iniciar la app flask
 # flask --app .\index.py run
 
@@ -112,3 +117,20 @@ def show_item(id):
     if request.method == 'GET':
         item = Product.query.get(id)
         return render_template('products/details.html', item=item , deleteForm=deleteForm)
+    
+
+
+# Upload CSV
+@main_bp.route('/upload', methods=["GET","POST"])
+def upload_csv():
+    if request.method == 'POST':
+        # table = 
+        csv_file = request.files['file']
+        csv_file = TextIOWrapper(csv_file, encoding='utf-8')
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        for row in csv_reader:
+            user = User(username=row[0], email=row[1])
+            db.session.add(user)
+            db.session.commit()
+        return redirect(url_for('upload_csv'))
+    return render_template('mockdata/uploadcsv.html')

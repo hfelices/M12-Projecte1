@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../static/css/products/create-product.css">
+    <title>Document</title>
+</head>
+<body>
+    <header>
+        {% include './partials/header.html'%}
+    </header>
+    <main style="flex-direction: column;">
+        <form style="margin-bottom: 1vh;" method='post' action='/upload' enctype='multipart/form-data'>
+            Sube un archivo csv con productos: <input type='file' name='file'>
+            <input type="hidden" value="products">
+            <input type='submit' value='Upload'>
+        </form>
+        <form  style="margin-bottom: 1vh;" method='post' action='/upload' enctype='multipart/form-data'>
+            Sube un archivo csv con usuarios: <input type='file' name='file'>
+            <input type="hidden" value="users">
+            <input type='submit' value='Upload'>
+        </form>
+        <form style="margin-bottom: 1vh;" method='post' action='/upload' enctype='multipart/form-data'>
+            Sube un archivo csv con categorias: <input type='file' name='file'>
+            <input type="hidden" value="categories">
+            <input type='submit' value='Upload'>
+        </form>
+       
+    </main>
+</body>
+</html>

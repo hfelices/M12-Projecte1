@@ -2,13 +2,13 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import os
 from flask_wtf.csrf import CSRFProtect
-from .config import SECRET_KEY, DATABASE, UPLOAD_FOLDER
+from .config import Config
 
 db_manager = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_pyfile("config.py")
+    app.config.from_object(Config)
 
     db_manager.init_app(app)
     
