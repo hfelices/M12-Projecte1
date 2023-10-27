@@ -124,13 +124,31 @@ def show_item(id):
 @main_bp.route('/upload', methods=["GET","POST"])
 def upload_csv():
     if request.method == 'POST':
-        # table = 
-        csv_file = request.files['file']
-        csv_file = TextIOWrapper(csv_file, encoding='utf-8')
-        csv_reader = csv.reader(csv_file, delimiter=',')
-        for row in csv_reader:
-            user = User(username=row[0], email=row[1])
-            db.session.add(user)
-            db.session.commit()
-        return redirect(url_for('upload_csv'))
+        table = request.form['table']
+        if(table == 'users'):
+            csv_file = request.files['file']
+            csv_file = TextIOWrapper(csv_file, encoding='utf-8')
+            csv_reader = csv.reader(csv_file, delimiter=',')
+            for row in csv_reader:
+                newUser = User(id=row[0], name=row[1], email=row[2],password=row[3])
+                db.session.add(newUser)
+                db.session.commit()
+        elif(table == 'products'):
+            csv_file = request.files['file']
+            csv_file = TextIOWrapper(csv_file, encoding='utf-8')
+            csv_reader = csv.reader(csv_file, delimiter=',')
+            for row in csv_reader:
+                newProduct = Product(id=row[0], title=row[1],description=row[2],photo=row[3],price=row[4],category_id=row[5],seller_id=row[1])
+                db.session.add(newProduct)
+                db.session.commit()
+        elif(table == 'categories'):
+            csv_file = request.files['file']
+            csv_file = TextIOWrapper(csv_file, encoding='utf-8')
+            csv_reader = csv.reader(csv_file, delimiter=',')
+            for row in csv_reader:
+                newCategory = Category(id=row[0], name=row[1],slug=row[2])
+                db.session.add(newCategory)
+                db.session.commit()
+        
+        return redirect(url_for('main_bp.upload_csv'))
     return render_template('mockdata/uploadcsv.html')

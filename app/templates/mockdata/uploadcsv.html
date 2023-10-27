@@ -13,17 +13,17 @@
     <main style="flex-direction: column;">
         <form style="margin-bottom: 1vh;" method='post' action='/upload' enctype='multipart/form-data'>
             Sube un archivo csv con productos: <input type='file' name='file'>
-            <input type="hidden" value="products">
+            <input type="hidden" name="table" value="products">
             <input type='submit' value='Upload'>
         </form>
         <form  style="margin-bottom: 1vh;" method='post' action='/upload' enctype='multipart/form-data'>
             Sube un archivo csv con usuarios: <input type='file' name='file'>
-            <input type="hidden" value="users">
+            <input type="hidden" name="table" value="users">
             <input type='submit' value='Upload'>
         </form>
         <form style="margin-bottom: 1vh;" method='post' action='/upload' enctype='multipart/form-data'>
             Sube un archivo csv con categorias: <input type='file' name='file'>
-            <input type="hidden" value="categories">
+            <input type="hidden" name="table" value="categories">
             <input type='submit' value='Upload'>
         </form>
        
