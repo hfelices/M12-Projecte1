@@ -6,11 +6,11 @@ from werkzeug.utils import secure_filename
 from . import db_manager as db
 from .models import Product, Category, User
 from .forms import ProductForm, DeleteProductForm
+from .config import ALLOWED_EXTENSIONS, UPLOAD_FOLDER
 # Comando para iniciar la app flask
 # flask --app .\index.py run
 
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
-UPLOAD_FOLDER = 'app/static/uploads'
+
 
 # Blueprint
 main_bp = Blueprint(

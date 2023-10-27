@@ -2,23 +2,16 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import os
 from flask_wtf.csrf import CSRFProtect
+from .config import SECRET_KEY, DATABASE, UPLOAD_FOLDER
 
 db_manager = SQLAlchemy()
-DATABASE = 'database.db'
-UPLOAD_FOLDER = './static/uploads'
 
 def create_app():
     app = Flask(__name__)
-
-    basedir = os.path.abspath(os.path.dirname(__file__)) 
-
-    # app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + basedir + "/" + DATABASE
-    app.config["SQLALCHEMY_ECHO"] = True
-    app.config["SECRET_KEY"] = "1234"
+    app.config.from_pyfile("config.py")
 
     db_manager.init_app(app)
-
+    
     # csrf = CSRFProtect(app)
     # csrf.init_app(app)
     with app.app_context():
