@@ -1,35 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../static/css/products/products.css">
-    <title>Document</title>
-</head>
-<body>
-    <header>
-        {% include './partials/header.html'%}
-    </header>
-    <main>
-        <div class="card">
-            <img src="../../static/uploads/{{item['photo'] }}" alt="Descripción de la imagen">
-            <div class="card-content">
-                <h2>{{ item['title'] }}</h2>
-                
-                    <p style="word-wrap: break-word;">{{ item['description'] }}</p>
-                
-                <p>{{ item['price'] }}€</p>
-                <a href="/products/update/{{ item['id'] }}">
-                    <button class="edit-button">
-                        <span class="button-text">✎</span> Editar
-                    </button>
-                </a>
-                <form action="/products/delete/{{ item['id'] }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este producto?')">
-                    {{ deleteForm.csrf_token }}
-                    <p>{{ deleteForm.submit(value="🗑 Eliminar", class="delete-button") }}</p>
-                </form>
-            </div>
+
+    
+    {% extends 'layout.html' %}
+    {% block content %}
+    <div class="card w-55">
+        <img src="../../static/uploads/{{item['photo'] }}" class="card-img-top" alt="Descripción de la imagen">
+        <div class="card-body">
+            <h2 class="card-title">{{ item['title'] }}</h2>
+            <p class="card-text" style="word-wrap: break-word;">{{ item['description'] }}</p>
+            <p class="card-text">{{ item['price'] }}€</p>
+            <a href="/products/update/{{ item['id'] }}">
+                <button class="btn btn-warning edit-button">
+                    <span class="button-text">✎</span> Editar
+                </button>
+            </a>
+            <form action="/products/delete/{{ item['id'] }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este producto?')">
+                {{ deleteForm.csrf_token }}
+                <p>{{ deleteForm.submit(value="🗑 Eliminar", class="btn btn-danger delete-button") }}</p>
+            </form>
         </div>
-    </main>
-</body>
-</html>
+    </div>
+    {% endblock %}

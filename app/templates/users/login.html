@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="container mt-4">
+    <form method="POST" action="/login" class="bg-light p-4 rounded-lg">
+        {{ form.csrf_token }}
+
+        <div class="form-group">
+            <label for="{{ form.name.id }}">{{ form.name.label }}</label>
+            {{ form.name(class="form-control", id=form.name.id) }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.password.id }}">{{ form.password.label }}</label>
+            {{ form.password(class="form-control", id=form.password.id) }}
+        </div>
+
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary btn-block">Iniciar Sesión</button>
+        </div>
+
+    </form>
+</div>
+{% endblock %}

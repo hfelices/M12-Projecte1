@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, SubmitField, SelectField, PasswordField, validators, DecimalField , TextAreaField, FileField
+from wtforms import StringField, EmailField, IntegerField, SubmitField, SelectField, PasswordField, validators, DecimalField , TextAreaField, FileField
 
 
 class ProductForm(FlaskForm):
@@ -21,5 +21,28 @@ class ProductForm(FlaskForm):
     submit = SubmitField()
     
 
+class CreateUserForm(FlaskForm):
+    name = StringField(
+        validators = [validators.DataRequired()]
+        )
+    email = EmailField (
+        validators = [validators.DataRequired()]
+        )
+    password = PasswordField(
+        validators = [validators.DataRequired()]
+        )
+    passConfirmation = PasswordField(
+        validators = [validators.DataRequired()]
+        )
+
+
+class LoginForm(FlaskForm):
+    name = StringField(
+        validators = [validators.DataRequired()]
+        )
+    password = PasswordField(
+        validators = [validators.DataRequired()]
+        
+        )
 class DeleteProductForm(FlaskForm):
     submit = SubmitField()

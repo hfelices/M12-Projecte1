@@ -7,7 +7,7 @@ from datetime import datetime
 from werkzeug.utils import secure_filename
 from . import db_manager as db
 from .models import Product, Category, User
-from .forms import ProductForm, DeleteProductForm
+from .forms import ProductForm, DeleteProductForm, CreateUserForm, LoginForm
 from .config import Config
 
 ALLOWED_EXTENSIONS = Config.ALLOWED_EXTENSIONS
@@ -152,3 +152,18 @@ def upload_csv():
         
         return redirect(url_for('main_bp.upload_csv'))
     return render_template('mockdata/uploadcsv.html')
+
+
+@main_bp.route('/register', methods=["GET","POST"])
+def register():
+    form = CreateUserForm()
+    if request.method == 'GET':
+        
+        return render_template('users/register.html', form = form)
+
+@main_bp.route('/login', methods=["GET","POST"])
+def login():
+    form = LoginForm()
+    if request.method == 'GET':
+        
+        return render_template('users/login.html', form = form)
