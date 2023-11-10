@@ -173,7 +173,11 @@ def admin():
         return redirect(url_for('main_bp.admin'))
     return render_template('admin/admin.html')
 
-
+# Llistar productes
+@main_bp.route('/profile', methods=["GET"])
+@login_required
+def profile():
+    return render_template('users/profile.html')
 
     
 
