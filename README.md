@@ -18,3 +18,8 @@ Primer projecte de M12 amb Flask
 Executa:
 
 >flask run --debug
+
+
+## Per poder accedir a la pagina d'administració (/admin) cal registrar un nou usuari i modificar el seu rol
+
+>UPDATE users SET role = "admin" where id = 1;
