@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, EmailField, IntegerField, SubmitField, SelectField, PasswordField, validators, DecimalField , TextAreaField, FileField
+from wtforms import StringField, EmailField, IntegerField, SubmitField, SelectField, PasswordField, validators, DecimalField , TextAreaField, FileField , HiddenField
 
 
 class ProductForm(FlaskForm):
@@ -16,6 +16,9 @@ class ProductForm(FlaskForm):
         validators = [validators.DataRequired(), validators.NumberRange(min=0, message='El precio debe ser mayor o igual a cero')]
         )
     category_id = SelectField(
+        validators = [validators.InputRequired()]
+        )
+    seller_id = HiddenField(
         validators = [validators.InputRequired()]
         )  
     submit = SubmitField()

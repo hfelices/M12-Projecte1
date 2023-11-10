@@ -1,32 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../static/css/products/create-product.css">
-    <title>Document</title>
-</head>
-<body>
-    <header>
-        {% include './partials/header.html'%}
-    </header>
-    <main style="flex-direction: column;">
-        <form style="margin-bottom: 1vh;" method='post' action='/upload' enctype='multipart/form-data'>
-            Sube un archivo csv con productos: <input type='file' name='file'>
-            <input type="hidden" name="table" value="products">
-            <input type='submit' value='Upload'>
-        </form>
-        <form  style="margin-bottom: 1vh;" method='post' action='/upload' enctype='multipart/form-data'>
-            Sube un archivo csv con usuarios: <input type='file' name='file'>
-            <input type="hidden" name="table" value="users">
-            <input type='submit' value='Upload'>
-        </form>
-        <form style="margin-bottom: 1vh;" method='post' action='/upload' enctype='multipart/form-data'>
-            Sube un archivo csv con categorias: <input type='file' name='file'>
-            <input type="hidden" name="table" value="categories">
-            <input type='submit' value='Upload'>
-        </form>
+
+
+{% extends 'layout.html' %}
+{% block content %}
+<div class="container mt-4">
+    <form style="margin-bottom: 1vh;" method='post' action='/admin' enctype='multipart/form-data' class="bg-light p-4 rounded-lg">
+        <div class="form-group">
+            <label for="file">Sube un archivo csv con productos:</label>
+            <input type='file' class="form-control-file" name='file' id="file">
+        </div>
+        <input type="hidden" name="table" value="products">
+        <button type='submit' class='btn btn-primary'>Upload</button>
+    </form>
+
+    <form style="margin-bottom: 1vh;" method='post' action='/admin' enctype='multipart/form-data' class="bg-light p-4 rounded-lg">
+        <div class="form-group">
+            <label for="file_users">Sube un archivo csv con usuarios:</label>
+            <input type='file' class="form-control-file" name='file' id="file_users">
+        </div>
+        <input type="hidden" name="table" value="users">
+        <button type='submit' class='btn btn-primary'>Upload</button>
+    </form>
+
+    <form style="margin-bottom: 1vh;" method='post' action='/admin' enctype='multipart/form-data' class="bg-light p-4 rounded-lg">
+        <div class="form-group">
+            <label for="file_categories">Sube un archivo csv con categorías:</label>
+            <input type='file' class="form-control-file" name='file' id="file_categories">
+        </div>
+        <input type="hidden" name="table" value="categories">
+        <button type='submit' class='btn btn-primary'>Upload</button>
+    </form>
+    <form style="margin-bottom: 1vh;" method='post' action='/admin' enctype='multipart/form-data' class="bg-light p-4 rounded-lg">
+        <input type="hidden" name="table" value="hash">
+        <button type='submit' class='btn btn-primary'>Hashear contraseñas</button>
+    </form>
+</div>
+
+{% endblock %}
        
-    </main>
-</body>
-</html>
+    

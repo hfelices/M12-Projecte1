@@ -7,8 +7,11 @@ from datetime import datetime
 from werkzeug.utils import secure_filename
 from . import db_manager as db
 from .models import Product, Category, User
-from .forms import ProductForm, DeleteProductForm, CreateUserForm, LoginForm
+from .forms import ProductForm, DeleteProductForm
 from .config import Config
+from flask_login import LoginManager, current_user, login_required
+from werkzeug.security import generate_password_hash
+
 
 ALLOWED_EXTENSIONS = Config.ALLOWED_EXTENSIONS
 UPLOAD_FOLDER = Config.UPLOAD_FOLDER
@@ -21,17 +24,24 @@ UPLOAD_FOLDER = Config.UPLOAD_FOLDER
 main_bp = Blueprint(
     "main_bp", __name__, template_folder="templates", static_folder="static"
 )
+# Login manager
+login_manager = LoginManager()
 
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @main_bp.route("/")
-def hello_world():
-    return redirect(url_for('main_bp.item_list'))
+def init():
+    if current_user.is_authenticated:
+        return redirect(url_for('main_bp.item_list'))
+    else:
+        return redirect(url_for("auth_bp.login"))
+    
 
 # Llistar productes
 @main_bp.route('/products', methods=["GET"])
+@login_required
 def item_list():
     deleteForm = DeleteProductForm()
     if request.method == 'GET':
@@ -40,10 +50,11 @@ def item_list():
 
 # Crear nou producte
 @main_bp.route('/products/create', methods=["GET", "POST"])
+@login_required
 def create_item():
     categories = Category.query.all()
     form = ProductForm()
-    form.category_id.choices=[(categoria.name) for categoria in categories]
+    form.category_id.choices=[(categoria.id, categoria.name) for categoria in categories]
     if form.validate_on_submit(): # si s'ha fet submit al formulari
         # he de crear un nou item
         
@@ -52,6 +63,7 @@ def create_item():
         form.populate_obj(new_product)
         # insert!
         
+
         file = form.photo.data
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
@@ -67,11 +79,12 @@ def create_item():
 
 # Editar productes
 @main_bp.route('/products/update/<int:id>', methods=["GET", "POST"])
+@login_required
 def update_item(id):
     categories = Category.query.all()
     product = Product.query.get_or_404(id)
     form = ProductForm(obj = product)
-    form.category_id.choices=[(categoria.name) for categoria in categories]
+    form.category_id.choices=[(categoria.id, categoria.name) for categoria in categories]
         
     if request.method == 'GET' :
         categories = Category.query.all()
@@ -99,6 +112,7 @@ def update_item(id):
 
 # Eliminar productes
 @main_bp.route("/products/delete/<int:id>", methods=["POST"])
+@login_required
 def delete_item(id):
     product = Product.query.get_or_404(id)
     form = DeleteProductForm(obj = product)
@@ -109,9 +123,10 @@ def delete_item(id):
         return redirect(url_for("main_bp.item_list"))
 
     return render_template("/products/list.html")
-
+        
 # Detall de producte
 @main_bp.route('/products/<int:id>', methods=["GET"])
+@login_required
 def show_item(id):
     deleteForm = DeleteProductForm()
     if request.method == 'GET':
@@ -121,8 +136,9 @@ def show_item(id):
 
 
 # Upload CSV
-@main_bp.route('/upload', methods=["GET","POST"])
-def upload_csv():
+@main_bp.route('/admin', methods=["GET","POST"])
+# @login_required
+def admin():
     if request.method == 'POST':
         table = request.form['table']
         if(table == 'users'):
@@ -130,7 +146,7 @@ def upload_csv():
             csv_file = TextIOWrapper(csv_file, encoding='utf-8')
             csv_reader = csv.reader(csv_file, delimiter=',')
             for row in csv_reader:
-                newUser = User(id=row[0], name=row[1], email=row[2],password=row[3])
+                newUser = User(id=row[0], name=row[1], email=row[2],password=generate_password_hash(row[3]))
                 db.session.add(newUser)
                 db.session.commit()
         elif(table == 'products'):
@@ -149,21 +165,17 @@ def upload_csv():
                 newCategory = Category(id=row[0], name=row[1],slug=row[2])
                 db.session.add(newCategory)
                 db.session.commit()
-        
-        return redirect(url_for('main_bp.upload_csv'))
-    return render_template('mockdata/uploadcsv.html')
+        elif(request.form['table']== 'hash'):
+            users = User.query.all()
+            for user in users:
+                user.password = generate_password_hash("user.password")
+            db.session.commit()
+        return redirect(url_for('main_bp.admin'))
+    return render_template('admin/admin.html')
 
 
-@main_bp.route('/register', methods=["GET","POST"])
-def register():
-    form = CreateUserForm()
-    if request.method == 'GET':
-        
-        return render_template('users/register.html', form = form)
 
-@main_bp.route('/login', methods=["GET","POST"])
-def login():
-    form = LoginForm()
-    if request.method == 'GET':
-        
-        return render_template('users/login.html', form = form)
+    
+
+    
+

@@ -1,6 +1,6 @@
 from . import db_manager as db
 from datetime import datetime
-
+from flask_login import UserMixin
 def now():
     return datetime.now()
 
@@ -12,7 +12,7 @@ class Product(db.Model):
     photo = db.Column(db.Text)
     price = db.Column(db.DECIMAL(10, 2), nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
-    seller_id = db.Column(db.Integer, db.ForeignKey('users.id'), default=1)
+    seller_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     created = db.Column(db.DATETIME, default=now(), nullable=False)
     updated = db.Column(db.DATETIME, default=now(), onupdate=now(), nullable=False)
 
@@ -25,7 +25,7 @@ class Category(db.Model):
     name = db.Column(db.Text, unique=True, nullable=False)
     slug = db.Column(db.Text, unique=True, nullable=False)
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.Text, unique=True, nullable=False)
@@ -33,3 +33,6 @@ class User(db.Model):
     password = db.Column(db.Text, nullable=False)
     created = db.Column(db.DATETIME, default=now(), nullable=False)
     updated = db.Column(db.DATETIME, default=now(), onupdate=now(), nullable=False)
+
+    def get_id(self):
+        return self.name
