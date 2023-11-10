@@ -31,7 +31,7 @@ class User(UserMixin, db.Model):
     name = db.Column(db.Text, unique=True, nullable=False)
     email = db.Column(db.Text, unique=True, nullable=False)
     password = db.Column(db.Text, nullable=False)
-    role = db.Column(db.Text, nullable=False)
+    role = db.Column(db.Text, nullable=False, default='wanner')
     created = db.Column(db.DATETIME, default=now(), nullable=False)
     updated = db.Column(db.DATETIME, default=now(), onupdate=now(), nullable=False)
 
