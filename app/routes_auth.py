@@ -25,7 +25,7 @@ def login():
         plain_text_password = form.password.data
 
         user = load_user(name)
-        print(plain_text_password, user.password)
+
         if user and check_password_hash(user.password, plain_text_password):
             # aquí és crea la cookie
             login_user(user)
