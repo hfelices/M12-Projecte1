@@ -19,11 +19,12 @@ def create_app():
     # csrf = CSRFProtect(app)
     # csrf.init_app(app)
     with app.app_context():
-        from . import routes_main, routes_auth
+        from . import routes_main, routes_auth, routes_admin
 
         # Registra els blueprints
         app.register_blueprint(routes_main.main_bp)  
         app.register_blueprint(routes_auth.auth_bp)
+        app.register_blueprint(routes_admin.admin_bp)
           
     app.logger.info("Aplicació iniciada")
     return app
