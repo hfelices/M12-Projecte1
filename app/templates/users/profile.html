@@ -1,0 +1,8 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="form-group">Tu nombre es: {{ current_user.name }}</h2>
+    <h2 class="form-group">Tu dirección de correo electrónico es: {{ current_user.email }}</h2>
+    <h2 class="form-group">Tu rol es: {{ current_user.role }}</h2>
+</div>
+{% endblock %}

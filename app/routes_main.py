@@ -137,7 +137,11 @@ def show_item(id):
 
 
 
-
+# Llistar productes
+@main_bp.route('/profile', methods=["GET"])
+@login_required
+def profile():
+    return render_template('users/profile.html')
 
     
 
