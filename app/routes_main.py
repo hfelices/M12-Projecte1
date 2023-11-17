@@ -11,6 +11,7 @@ from .forms import ProductForm, DeleteProductForm
 from .config import Config
 from flask_login import LoginManager, current_user, login_required
 from werkzeug.security import generate_password_hash
+from .helper_role import require_wanner_permission, require_moderator_permission, require_admin_permission
 
 
 ALLOWED_EXTENSIONS = Config.ALLOWED_EXTENSIONS
@@ -42,6 +43,7 @@ def init():
 # Llistar productes
 @main_bp.route('/products', methods=["GET"])
 @login_required
+@require_wanner_permission.require(http_exception=403)
 def item_list():
     deleteForm = DeleteProductForm()
     if request.method == 'GET':
