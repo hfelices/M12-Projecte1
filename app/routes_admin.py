@@ -24,6 +24,7 @@ admin_bp = Blueprint(
 @admin_bp.route('/admin')
 @login_required
 def admin_index():
+    print(f"...{current_user.role}...")
     return render_template('admin/index.html')
 
 @admin_bp.route('/admin/users')

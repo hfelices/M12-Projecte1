@@ -6,7 +6,7 @@ from .forms import LoginForm
 from . import db_manager as db
 from .forms import  CreateUserForm, LoginForm
 from werkzeug.security import check_password_hash, generate_password_hash
-
+from .helper_role import notify_identity_changed
 # Blueprint
 auth_bp = Blueprint(
     "auth_bp", __name__, template_folder="templates", static_folder="static"
@@ -29,6 +29,7 @@ def login():
         if user and check_password_hash(user.password, plain_text_password):
             # aquí és crea la cookie
             login_user(user)
+            notify_identity_changed()
             return redirect(url_for("main_bp.init"))
 
         # si arriba aquí, és que no s'ha autenticat correctament
