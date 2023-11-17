@@ -1,8 +1,13 @@
 {% extends 'layout.html' %}
+
 {% block content %}
 <div class="container mt-4">
-    <h2 class="form-group">Tu nombre es: {{ current_user.name }}</h2>
-    <h2 class="form-group">Tu dirección de correo electrónico es: {{ current_user.email }}</h2>
-    <h2 class="form-group">Tu rol es: {{ current_user.role }}</h2>
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title text-3xl font-bold text-primary mb-4">Tu nombre es: <span class="text-dark">{{ current_user.name }}</span></h2>
+            <h2 class="card-title text-3xl font-bold text-primary mb-4">Tu dirección de correo electrónico es: <span class="text-dark">{{ current_user.email }}</span></h2>
+            <h2 class="card-title text-3xl font-bold text-primary mb-4">Tu rol es: <span class="text-dark">{{ current_user.role }}</span></h2>
+        </div>
+    </div>
 </div>
 {% endblock %}

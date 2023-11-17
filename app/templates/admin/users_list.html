@@ -3,22 +3,29 @@
 {% block content %}
 
 <div style="margin-top: 5vh;margin-bottom: 5vh;">
-    <a href="/admin" style="text-decoration: none;" class="bg-light p-4 rounded-lg ">Volver</a>
+    <a href="/admin" style="text-decoration: none;" class="btn btn-primary">Volver</a>
 </div>
 
 <h3>Users</h3>
-<table>
-    <tr>
-        <th>ID</th>
-        <th>NOM</th>
-        <th>ROL</th>
-    </tr>
-    {% for user in users %}
-    <tr>
-        <td>{{ user.id }}</td>
-        <td>{{ user.email }}</td>
-        <td>{{ user.role }}</td>
-    </tr>
-    {% endfor %}
-</table>
+
+<div class="container mt-5">
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>NOM</th>
+                <th>ROL</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.role }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}
