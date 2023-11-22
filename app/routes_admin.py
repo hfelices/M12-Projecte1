@@ -11,9 +11,7 @@ import csv
 from io import TextIOWrapper
 from . import db_manager as db
 from .models import Product, Category, User
-
-
-
+from .helper_role import requireAdminRole, requireModeratePermission
 
 
 # Blueprint
@@ -23,12 +21,14 @@ admin_bp = Blueprint(
 
 @admin_bp.route('/admin')
 @login_required
+@requireModeratePermission.require(http_exception=403)
 def admin_index():
-    print(f"...{current_user.role}...")
-    return render_template('admin/index.html')
+    user = current_user.role
+    return render_template('admin/index.html', role = user)
 
 @admin_bp.route('/admin/users')
 @login_required
+@requireAdminRole.require(http_exception=403)
 def admin_users():
     users = db.session.query(User).all()
     return render_template('admin/users_list.html', users=users)
@@ -36,6 +36,7 @@ def admin_users():
 # Upload CSV
 @admin_bp.route('/admin/tools', methods=["GET","POST"])
 @login_required
+@requireAdminRole.require(http_exception=403)
 def admin():
     if request.method == 'POST':
         table = request.form['table']
@@ -68,5 +69,5 @@ def admin():
             for user in users:
                 user.password = generate_password_hash("user.password")
             db.session.commit()
-        return redirect(url_for('main_bp.admin'))
+        return redirect(url_for('admin_bp.admin'))
     return render_template('admin/admin_tools.html')
