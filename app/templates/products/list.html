@@ -1,6 +1,7 @@
 {% extends 'layout.html' %}
 {% block content %}
         <!-- Bootstrap grid system for button and card containers -->
+        {% if current_user['role'] == 'wanner' %}
         <div class="row justify-content-center">
             <div class="col-12 col-md-10 button-container text-center">
                 <a href="/products/create">
@@ -11,6 +12,8 @@
                 </a>
             </div>
         </div>
+        {% endif %}
+        
 
         <div class="row mt-4">
             {% for product in items %}
@@ -27,15 +30,19 @@
                             <p class="card-text">{{ product['description'] }}</p>
                             {% endif %}
                             <p class="card-text">{{ product['price'] }}€</p>
+                            {% if current_user['id'] == product['seller_id'] or current_user['role'] == 'admin'  %}
                             <a href="/products/update/{{ product['id'] }}" class="btn btn-success edit-button">
                                 <span class="button-text">✎</span> Editar
                             </a>
+                            {% endif %}
+                            {% if current_user['id'] == product['seller_id'] or current_user['role'] in ['admin','moderator'] %}
                             <form action="/products/delete/{{ product['id'] }}" method="POST"
                                 onsubmit="return confirm('¿Estás seguro de que deseas eliminar este producto?')">
                                 {{ deleteForm.csrf_token }}
                                 <p>{{ deleteForm.submit(value="🗑 Eliminar", class="btn btn-danger delete-button") }}
                                 </p>
                             </form>
+                            {% endif %}
                         </div>
                     </div>
                 </a>

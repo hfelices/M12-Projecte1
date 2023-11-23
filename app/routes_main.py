@@ -11,7 +11,7 @@ from .forms import ProductForm, DeleteProductForm
 from .config import Config
 from flask_login import LoginManager, current_user, login_required
 from werkzeug.security import generate_password_hash
-from .helper_role import requireAdminRole, requireViewPermission
+from .helper_role import requireAdminRole, requireViewPermission, requireEditPermission, requireModeratorRole , requireWannerRole
 
 
 ALLOWED_EXTENSIONS = Config.ALLOWED_EXTENSIONS
@@ -53,6 +53,7 @@ def item_list():
 # Crear nou producte
 @main_bp.route('/products/create', methods=["GET", "POST"])
 @login_required
+@requireWannerRole.require(http_exception=403)
 def create_item():
     categories = Category.query.all()
     form = ProductForm()
@@ -82,6 +83,7 @@ def create_item():
 # Editar productes
 @main_bp.route('/products/update/<int:id>', methods=["GET", "POST"])
 @login_required
+@requireEditPermission.require(http_exception=403)
 def update_item(id):
     categories = Category.query.all()
     product = Product.query.get_or_404(id)
@@ -115,6 +117,7 @@ def update_item(id):
 # Eliminar productes
 @main_bp.route("/products/delete/<int:id>", methods=["POST"])
 @login_required
+@requireViewPermission.require(http_exception=403)
 def delete_item(id):
     product = Product.query.get_or_404(id)
     form = DeleteProductForm(obj = product)
@@ -129,6 +132,7 @@ def delete_item(id):
 # Detall de producte
 @main_bp.route('/products/<int:id>', methods=["GET"])
 @login_required
+@requireViewPermission.require(http_exception=403)
 def show_item(id):
     deleteForm = DeleteProductForm()
     if request.method == 'GET':
@@ -139,11 +143,7 @@ def show_item(id):
 
 
 
-# Llistar productes
-@main_bp.route('/profile', methods=["GET"])
-@login_required
-def profile():
-    return render_template('users/profile.html')
+
 
     
 

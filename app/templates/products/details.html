@@ -8,15 +8,19 @@
             <h2 class="card-title">{{ item['title'] }}</h2>
             <p class="card-text" style="word-wrap: break-word;">{{ item['description'] }}</p>
             <p class="card-text">{{ item['price'] }}€</p>
+            {% if current_user['id'] == item['seller_id'] or current_user['role'] == 'admin'  %}
             <a href="/products/update/{{ item['id'] }}">
                 <button class="btn btn-warning edit-button">
                     <span class="button-text">✎</span> Editar
                 </button>
             </a>
+            {% endif %}
+            {% if current_user['id'] == item['seller_id'] or current_user['role'] in ['admin','moderator'] %}
             <form action="/products/delete/{{ item['id'] }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este producto?')">
                 {{ deleteForm.csrf_token }}
                 <p>{{ deleteForm.submit(value="🗑 Eliminar", class="btn btn-danger delete-button") }}</p>
             </form>
+            {% endif %}
         </div>
     </div>
     {% endblock %}
