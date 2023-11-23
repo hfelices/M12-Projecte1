@@ -11,6 +11,7 @@ from .forms import ProductForm, DeleteProductForm
 from .config import Config
 from flask_login import LoginManager, current_user, login_required
 from werkzeug.security import generate_password_hash
+from .helper_role import requireAdminRole, requireViewPermission
 
 
 ALLOWED_EXTENSIONS = Config.ALLOWED_EXTENSIONS
@@ -42,6 +43,7 @@ def init():
 # Llistar productes
 @main_bp.route('/products', methods=["GET"])
 @login_required
+@requireViewPermission.require(http_exception=403)
 def item_list():
     deleteForm = DeleteProductForm()
     if request.method == 'GET':
@@ -135,45 +137,13 @@ def show_item(id):
     
 
 
-# Upload CSV
-@main_bp.route('/admin', methods=["GET","POST"])
-# @login_required
-def admin():
-    if request.method == 'POST':
-        table = request.form['table']
-        if(table == 'users'):
-            csv_file = request.files['file']
-            csv_file = TextIOWrapper(csv_file, encoding='utf-8')
-            csv_reader = csv.reader(csv_file, delimiter=',')
-            for row in csv_reader:
-                newUser = User(id=row[0], name=row[1], email=row[2],password=generate_password_hash(row[3]))
-                db.session.add(newUser)
-                db.session.commit()
-        elif(table == 'products'):
-            csv_file = request.files['file']
-            csv_file = TextIOWrapper(csv_file, encoding='utf-8')
-            csv_reader = csv.reader(csv_file, delimiter=',')
-            for row in csv_reader:
-                newProduct = Product(id=row[0], title=row[1],description=row[2],photo=row[3],price=row[4],category_id=row[5],seller_id=row[1])
-                db.session.add(newProduct)
-                db.session.commit()
-        elif(table == 'categories'):
-            csv_file = request.files['file']
-            csv_file = TextIOWrapper(csv_file, encoding='utf-8')
-            csv_reader = csv.reader(csv_file, delimiter=',')
-            for row in csv_reader:
-                newCategory = Category(id=row[0], name=row[1],slug=row[2])
-                db.session.add(newCategory)
-                db.session.commit()
-        elif(request.form['table']== 'hash'):
-            users = User.query.all()
-            for user in users:
-                user.password = generate_password_hash("user.password")
-            db.session.commit()
-        return redirect(url_for('main_bp.admin'))
-    return render_template('admin/admin.html')
 
 
+# Llistar productes
+@main_bp.route('/profile', methods=["GET"])
+@login_required
+def profile():
+    return render_template('users/profile.html')
 
     
 
