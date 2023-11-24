@@ -4,10 +4,9 @@ from . import login_manager , mail_manager as mail
 from .models import User
 from .forms import LoginForm
 from . import db_manager as db
-from .forms import  CreateUserForm, LoginForm
+from .forms import  CreateUserForm, LoginForm, ProfileForm
 from werkzeug.security import check_password_hash, generate_password_hash
 from .helper_role import notify_identity_changed
-from .helper_mail import MailManager
 from datetime import datetime
 import secrets
 
@@ -16,10 +15,34 @@ auth_bp = Blueprint(
     "auth_bp", __name__, template_folder="templates", static_folder="static"
 )
 
-@auth_bp.route('/profile', methods=["GET"])
+@auth_bp.route("/profile", methods=["GET", "POST"])
 @login_required
 def profile():
-    return render_template('users/profile.html')
+    form = ProfileForm(obj=current_user)
+
+    if form.validate_on_submit():
+        current_user.name = form.name.data
+
+        if current_user.email != form.email.data:
+            current_user.email = form.email.data
+            current_user.verified = 'false'
+            token = secrets.token_urlsafe(20)
+            current_user.email_token = token
+            msg = f"""
+
+            Accede a esta página para verificar el mail: http://127.0.0.1:5000/verify/{current_user.name}/{token}
+"""         
+            mail.send_contact_msg(msg, current_user.name, form.email.data)
+
+        if form.password.data:
+            hashed_password = generate_password_hash(form.password.data)
+            current_user.password = hashed_password
+
+        db.session.commit()
+        logout_user()
+        return redirect(url_for('auth_bp.profile'))
+
+    return render_template('/users/profile.html', form=form)
 
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():

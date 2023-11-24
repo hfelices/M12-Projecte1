@@ -45,7 +45,18 @@ class LoginForm(FlaskForm):
         )
     password = PasswordField(
         validators = [validators.DataRequired()]
-        
         )
+    
+class ProfileForm(FlaskForm):
+    name = StringField(
+        validators = [validators.DataRequired()]
+        )
+    email = StringField(
+        validators = [validators.DataRequired()]
+        )
+    password = PasswordField(
+        "cambiar contraseña"
+        )
+
 class DeleteProductForm(FlaskForm):
     submit = SubmitField()
