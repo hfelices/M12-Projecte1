@@ -17,7 +17,7 @@ class MailManager:
 
     def send_contact_msg(self, msg, name, email):
 
-        content = f"""Codigo de verificación:
+        content = f"""URL de verificación:
         
         {msg}
 

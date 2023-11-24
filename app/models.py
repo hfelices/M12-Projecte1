@@ -34,6 +34,8 @@ class User(UserMixin, db.Model):
     role = db.Column(db.Text, nullable=False, default='wanner')
     created = db.Column(db.DATETIME, default=now(), nullable=False)
     updated = db.Column(db.DATETIME, default=now(), onupdate=now(), nullable=False)
+    email_token = db.Column(db.Text, nullable=False)
+    verified = db.Column(db.Text, nullable=False)
 
     def get_id(self):
         return self.name

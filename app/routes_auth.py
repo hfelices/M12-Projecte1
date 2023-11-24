@@ -1,6 +1,6 @@
 from flask import Flask ,Blueprint, render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_user, login_required, logout_user
-from . import login_manager
+from . import login_manager , mail_manager as mail
 from .models import User
 from .forms import LoginForm
 from . import db_manager as db
@@ -33,17 +33,22 @@ def login():
         plain_text_password = form.password.data
 
         user = load_user(name)
+        
 
-        if user and check_password_hash(user.password, plain_text_password):
+        if user and check_password_hash(user.password, plain_text_password) and user.verified == 'true':
             # aquí és crea la cookie
             login_user(user)
             notify_identity_changed()
             return redirect(url_for("main_bp.init"))
 
+        if user.verified != 'true' :
+            message = "Debe verificar el correo"
+        elif not check_password_hash(user.password, plain_text_password):
+            message = "Nombre de usuario o contraseña incorrectos"
         # si arriba aquí, és que no s'ha autenticat correctament
-        return redirect(url_for("auth_bp.login"))
-    
-    return render_template('users/login.html', form = form)
+        return render_template("users/login.html", form = form, message = message)
+        
+    return render_template('users/login.html', form = form , )
 
 @login_manager.user_loader
 def load_user(name):
@@ -63,17 +68,18 @@ def logout():
     logout_user()
     return redirect(url_for("auth_bp.login"))
 
-@auth_bp.route('/verify/<name>/<email_token>', methods=["GET"])
-def verify(name, email_token):
-    verify = User.query.get_or_404(email_token)
+@auth_bp.route('/verify/<name>/<token>', methods=["GET"])
+def verify(name, token):
+    form = LoginForm()
+    verify = db.session.query(User).filter(User.email_token == token).one_or_none()
     if verify:
-        user = User.query.get_or_404(name)
-        user.verify = 'True'
+        user = db.session.query(User).filter(User.name == name).one_or_none()
+        user.verified = 'true'
         user.updated = datetime.utcnow()
         db.session.commit()
-        return redirect(url_for("auth_bp.login", message = "Email verificado con éxito"))
-
-
+        return render_template("users/login.html", message = "Email verificado con éxito" ,form = form)
+    else:
+        return render_template("users/login.html", message = "Error al verificar" , form = form)
 @auth_bp.route('/register', methods=["GET","POST"])
 def register():
     if current_user.is_authenticated:
@@ -96,8 +102,9 @@ def register():
             msg = f"""
 
             Accede a esta página para verificar el mail: http://127.0.0.1:5000/verify/{new_user.name}/{token}
-"""
-            MailManager.send_contact_msg(msg, new_user.name, new_user.email)
-            return render_template('users/login.html', message = "Se te ha enviado un correo de verificación.")
+"""         
+            mail.send_contact_msg(msg, new_user.name, new_user.email)
+            form = LoginForm()
+            return render_template('users/login.html', message = "Se te ha enviado un correo de verificación.", form = form )
         else:
           return render_template('users/register.html', form = form)  
