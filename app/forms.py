@@ -47,5 +47,16 @@ class LoginForm(FlaskForm):
         validators = [validators.DataRequired()]
         
         )
+    
+class ResendForm(FlaskForm):
+    email = EmailField(
+        validators = [validators.DataRequired()]
+        )
+    password = PasswordField(
+        validators = [validators.DataRequired()]
+        
+        )
+   
+
 class DeleteProductForm(FlaskForm):
     submit = SubmitField()

@@ -4,7 +4,7 @@ from . import login_manager , mail_manager as mail
 from .models import User
 from .forms import LoginForm
 from . import db_manager as db
-from .forms import  CreateUserForm, LoginForm
+from .forms import  CreateUserForm, LoginForm, ResendForm
 from werkzeug.security import check_password_hash, generate_password_hash
 from .helper_role import notify_identity_changed
 from .helper_mail import MailManager
@@ -68,18 +68,9 @@ def logout():
     logout_user()
     return redirect(url_for("auth_bp.login"))
 
-@auth_bp.route('/verify/<name>/<token>', methods=["GET"])
-def verify(name, token):
-    form = LoginForm()
-    verify = db.session.query(User).filter(User.email_token == token).one_or_none()
-    if verify:
-        user = db.session.query(User).filter(User.name == name).one_or_none()
-        user.verified = 'true'
-        user.updated = datetime.utcnow()
-        db.session.commit()
-        return render_template("users/login.html", message = "Email verificado con éxito" ,form = form)
-    else:
-        return render_template("users/login.html", message = "Error al verificar" , form = form)
+
+    
+
 @auth_bp.route('/register', methods=["GET","POST"])
 def register():
     if current_user.is_authenticated:
@@ -107,4 +98,69 @@ def register():
             form = LoginForm()
             return render_template('users/login.html', message = "Se te ha enviado un correo de verificación.", form = form )
         else:
-          return render_template('users/register.html', form = form)  
+            return render_template('users/register.html', form = form)  
+        
+
+
+
+
+@auth_bp.route('/verify/<name>/<token>', methods=["GET"])
+def verify(name, token):
+    form = LoginForm()
+    verify = db.session.query(User).filter(User.email_token == token).one_or_none()
+    if verify:
+        user = db.session.query(User).filter(User.name == name).one_or_none()
+        user.verified = 'true'
+        user.updated = datetime.utcnow()
+        db.session.commit()
+        return render_template("users/login.html", message = "Email verificado con éxito" ,form = form)
+    else:
+        return render_template("users/login.html", message = "Error al verificar" , form = form)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@auth_bp.route('/resend', methods=["GET","POST"])
+def resend():
+    if current_user.is_authenticated:
+        return redirect(url_for("main_bp.item_list"))
+
+    form = ResendForm()
+    if request.method == 'GET':
+        return render_template('users/resend.html' , form = form )
+    elif request.method == 'POST'and form.validate_on_submit() :
+        email = form.email.data
+        user =  User.query.filter_by(email = email).first()
+        
+        print(f"\033[93m{user.name}\033[0m")
+        if check_password_hash(user.password, form.password.data):
+            print(f"\033[93m entra \033[0m")
+            token = secrets.token_urlsafe(20)
+            user.email_token = token
+            user.verified = 'false'
+            db.session.commit()
+            msg = f"""
+
+            Accede a esta página para verificar el mail: http://127.0.0.1:5000/verify/{user.name}/{token}
+"""         
+            mail.send_contact_msg(msg, user.name, user.email)
+    
+            flash('Correo de verificación enviado', 'success')
+            return redirect(url_for("auth_bp.login"))
+        else:
+            flash('Correo o contraseña incorrectos', 'success')
+            return redirect(url_for("auth_bp.resend"))
+        
