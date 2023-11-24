@@ -1,1 +1,4 @@
 .env
+database.db
+database.sqpro
+database.db-journal
