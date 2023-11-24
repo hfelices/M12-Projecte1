@@ -1,12 +1,10 @@
-
-
 {% extends 'layout.html' %}
 {% block content %}
 <div style="margin-top: 5vh;margin-bottom: 5vh;">
     <a href="/admin" style="text-decoration: none;" class="btn btn-primary">Volver</a>
 </div>
 <div class="container mt-4">
-    <form style="margin-bottom: 1vh;" method='post' action='/admin' enctype='multipart/form-data' class="bg-light p-4 rounded-lg">
+    <form style="margin-bottom: 1vh;" method='post' action='/admin/tools' enctype='multipart/form-data' class="bg-light p-4 rounded-lg">
         <div class="form-group">
             <label for="file">Sube un archivo csv con productos:</label>
             <input type='file' class="form-control-file" name='file' id="file">
@@ -15,7 +13,7 @@
         <button type='submit' class='btn btn-primary'>Upload</button>
     </form>
 
-    <form style="margin-bottom: 1vh;" method='post' action='/admin' enctype='multipart/form-data' class="bg-light p-4 rounded-lg">
+    <form style="margin-bottom: 1vh;" method='post' action='/admin/tools' enctype='multipart/form-data' class="bg-light p-4 rounded-lg">
         <div class="form-group">
             <label for="file_users">Sube un archivo csv con usuarios:</label>
             <input type='file' class="form-control-file" name='file' id="file_users">
@@ -24,7 +22,7 @@
         <button type='submit' class='btn btn-primary'>Upload</button>
     </form>
 
-    <form style="margin-bottom: 1vh;" method='post' action='/admin' enctype='multipart/form-data' class="bg-light p-4 rounded-lg">
+    <form style="margin-bottom: 1vh;" method='post' action='/admin/tools' enctype='multipart/form-data' class="bg-light p-4 rounded-lg">
         <div class="form-group">
             <label for="file_categories">Sube un archivo csv con categorías:</label>
             <input type='file' class="form-control-file" name='file' id="file_categories">
@@ -32,7 +30,8 @@
         <input type="hidden" name="table" value="categories">
         <button type='submit' class='btn btn-primary'>Upload</button>
     </form>
-    <form style="margin-bottom: 1vh;" method='post' action='/admin' enctype='multipart/form-data' class="bg-light p-4 rounded-lg">
+
+    <form style="margin-bottom: 1vh;" method='post' action='/admin/tools' enctype='multipart/form-data' class="bg-light p-4 rounded-lg">
         <input type="hidden" name="table" value="hash">
         <button type='submit' class='btn btn-primary'>Hashear contraseñas</button>
     </form>
