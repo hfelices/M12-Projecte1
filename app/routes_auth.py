@@ -58,20 +58,19 @@ def login():
         user = load_user(name)
         
 
-        if user and check_password_hash(user.password, plain_text_password) and user.verified == 'true':
+        if user and check_password_hash(user.password, plain_text_password):
             # aquí és crea la cookie
-            login_user(user)
-            notify_identity_changed()
-            return redirect(url_for("main_bp.init"))
-
-        if user.verified != 'true' :
-            message = "Debe verificar el correo"
-        elif not check_password_hash(user.password, plain_text_password):
-            message = "Nombre de usuario o contraseña incorrectos"
-        # si arriba aquí, és que no s'ha autenticat correctament
-        return render_template("users/login.html", form = form, message = message)
-        
-    return render_template('users/login.html', form = form , )
+            if user.verified != 'true' :
+                flash('Debe verificar el correo', 'success')
+                return redirect(url_for("auth_bp.login"))
+            else:
+                login_user(user)
+                notify_identity_changed()
+                return redirect(url_for("main_bp.init"))
+        else:
+            flash('Nombre de usuario o contraseña incorrectos', 'success')
+            return redirect(url_for("auth_bp.login"))
+    return render_template('users/login.html', form = form)
 
 @login_manager.user_loader
 def load_user(name):
@@ -116,8 +115,8 @@ def register():
 """         
             mail.send_contact_msg(msg, new_user.name, new_user.email)
             form = LoginForm()
-            return render_template('users/login.html', message = "Se te ha enviado un correo de verificación.", form = form )
-            return render_template('users/register.html', form = form)  
+            flash('Se te ha enviado un correo de verificación.', 'success')
+            return redirect(url_for("auth_bp.login"))
         
 @auth_bp.route('/verify/<name>/<token>', methods=["GET"])
 def verify(name, token):
@@ -128,23 +127,11 @@ def verify(name, token):
         user.verified = 'true'
         user.updated = datetime.utcnow()
         db.session.commit()
-        return render_template("users/login.html", message = "Email verificado con éxito" ,form = form)
+        flash('Email verificado con éxito', 'success')
+        return redirect(url_for("auth_bp.login"))
     else:
-        return render_template("users/login.html", message = "Error al verificar" , form = form)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        flash('Error al verificar', 'success')
+        return redirect(url_for("auth_bp.login"))
 
 
 
