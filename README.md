@@ -13,6 +13,12 @@ Primer projecte de M12 amb Flask
 
 >pip install -r requirements.txt
 
+### Generar arxiu .env:
+
+>cp .env.example .env
+
+### !!! Editar variables del fitxer .env perquè funcioni, les que hi ha són només explicatives !!!
+
 ## Run
 
 Executa:

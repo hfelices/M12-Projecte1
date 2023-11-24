@@ -5,10 +5,12 @@ from flask_wtf.csrf import CSRFProtect
 from .config import Config
 from flask_login import LoginManager
 from flask_principal import Principal
+from .helper_mail import MailManager
 
 db_manager = SQLAlchemy()
 login_manager = LoginManager()
 principal_manager =  Principal()
+mail_manager = MailManager()
 
 def create_app():
     app = Flask(__name__)
@@ -18,6 +20,7 @@ def create_app():
     login_manager.init_app(app)
     db_manager.init_app(app)
     principal_manager.init_app(app)
+    mail_manager.init_app(app)
 
     # csrf = CSRFProtect(app)
     # csrf.init_app(app)
@@ -29,5 +32,5 @@ def create_app():
         app.register_blueprint(routes_auth.auth_bp)
         app.register_blueprint(routes_admin.admin_bp)
           
-    app.logger.info("Aplicació iniciada")
+    app.logger.info("Aplicación iniciada")
     return app

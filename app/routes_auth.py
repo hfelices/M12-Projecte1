@@ -7,11 +7,19 @@ from . import db_manager as db
 from .forms import  CreateUserForm, LoginForm
 from werkzeug.security import check_password_hash, generate_password_hash
 from .helper_role import notify_identity_changed
+from .helper_mail import MailManager
+from datetime import datetime
+import secrets
+
 # Blueprint
 auth_bp = Blueprint(
     "auth_bp", __name__, template_folder="templates", static_folder="static"
 )
 
+@auth_bp.route('/profile', methods=["GET"])
+@login_required
+def profile():
+    return render_template('users/profile.html')
 
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
@@ -55,6 +63,17 @@ def logout():
     logout_user()
     return redirect(url_for("auth_bp.login"))
 
+@auth_bp.route('/verify/<name>/<email_token>', methods=["GET"])
+def verify(name, email_token):
+    verify = User.query.get_or_404(email_token)
+    if verify:
+        user = User.query.get_or_404(name)
+        user.verify = 'True'
+        user.updated = datetime.utcnow()
+        db.session.commit()
+        return redirect(url_for("auth_bp.login", message = "Email verificado con éxito"))
+
+
 @auth_bp.route('/register', methods=["GET","POST"])
 def register():
     if current_user.is_authenticated:
@@ -68,9 +87,17 @@ def register():
     elif request.method == 'POST' and form.validate_on_submit() :
         if form.password.data == form.passConfirmation.data:
             form.populate_obj(new_user)
+            token = secrets.token_urlsafe(20)
+            new_user.email_token = token
+            new_user.verified = 'false'
             new_user.password= generate_password_hash(new_user.password)
             db.session.add(new_user)
             db.session.commit()
-            return redirect(url_for('auth_bp.login'))
+            msg = f"""
+
+            Accede a esta página para verificar el mail: http://127.0.0.1:5000/verify/{new_user.name}/{token}
+"""
+            MailManager.send_contact_msg(msg, new_user.name, new_user.email)
+            return render_template('users/login.html', message = "Se te ha enviado un correo de verificación.")
         else:
           return render_template('users/register.html', form = form)  

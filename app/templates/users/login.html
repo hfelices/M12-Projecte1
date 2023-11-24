@@ -4,6 +4,11 @@
     <form method="POST" action="/login" class="bg-light p-4 rounded-lg">
         {{ form.csrf_token }}
 
+        {% if message %}
+            <div class="form-group">
+                {{ message }}
+            </div>
+        {% endif %}
         <div class="form-group">
             <label for="{{ form.name.id }}">{{ form.name.label }}</label>
             {{ form.name(class="form-control", id=form.name.id) }}
