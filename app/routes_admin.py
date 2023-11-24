@@ -4,14 +4,18 @@ from . import login_manager
 from .models import User
 from .forms import LoginForm
 from . import db_manager as db
+from sqlalchemyseed import load_entities_from_json
+from sqlalchemyseed import Seeder
 from .forms import  CreateUserForm, LoginForm
 from werkzeug.security import check_password_hash, generate_password_hash
-import os
+from os import path
 import csv
 from io import TextIOWrapper
 from . import db_manager as db
 from .models import Product, Category, User
 from .helper_role import requireAdminRole, requireModeratePermission
+
+basedir = path.abspath(path.dirname(__file__))
 
 
 # Blueprint
@@ -64,10 +68,20 @@ def admin():
                 newCategory = Category(id=row[0], name=row[1],slug=row[2])
                 db.session.add(newCategory)
                 db.session.commit()
-        elif(request.form['table']== 'hash'):
+        elif(table== 'hash'):
             users = User.query.all()
             for user in users:
                 user.password = generate_password_hash("user.password")
             db.session.commit()
+        elif(table== 'categories_seed'):
+            
+            # load entities
+            entities = load_entities_from_json(f"{basedir}'/categories.json'")
+            # Initializing Seeder
+            seeder = Seeder(db.session)
+            # Seeding
+            seeder.seed(entities)
+            # Committing
+            db.session.commit()  
         return redirect(url_for('admin_bp.admin'))
     return render_template('admin/admin_tools.html')
