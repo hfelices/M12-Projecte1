@@ -1,10 +1,10 @@
-from flask import Flask ,Blueprint, render_template, flash, redirect, url_for, request
+from flask import Flask ,Blueprint, render_template, flash, redirect, url_for, request ,current_app
 from flask_login import current_user, login_user, login_required, logout_user
 from . import login_manager , mail_manager as mail
 from .models import User
 from .forms import LoginForm
 from . import db_manager as db
-from .forms import  CreateUserForm, LoginForm, ProfileForm, ResendForm
+from .forms import  CreateUserForm, LoginForm, ResendForm ,ProfileForm
 from werkzeug.security import check_password_hash, generate_password_hash
 from .helper_role import notify_identity_changed
 from datetime import datetime
@@ -54,6 +54,7 @@ def login():
     if form.validate_on_submit(): # si s'ha enviat el formulari via POST i és correcte
         name = form.name.data
         plain_text_password = form.password.data
+        logger.debug(f"Usuari {name} intenta autenticar-se")
 
         user = load_user(name)
         
@@ -62,11 +63,13 @@ def login():
             # aquí és crea la cookie
             login_user(user)
             notify_identity_changed()
+            logger.info(f"Usuari {name} s'ha autenticat correctament")
             return redirect(url_for("main_bp.init"))
 
         if user.verified != 'true' :
             message = "Debe verificar el correo"
         elif not check_password_hash(user.password, plain_text_password):
+            logger.warning(f"Usuari {name} no s'ha autenticat correctament")
             message = "Nombre de usuario o contraseña incorrectos"
         # si arriba aquí, és que no s'ha autenticat correctament
         return render_template("users/login.html", form = form, message = message)

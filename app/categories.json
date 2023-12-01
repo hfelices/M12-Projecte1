@@ -1,0 +1,66 @@
+{
+    "model": "Category",
+    "data": [
+        {
+          "name": "Tecnología",
+          "slug": "Productos tecnológicos de todo tipo"
+        },
+        {
+          "name": "Moda",
+          "slug": "Ropa, calzado y accesorios de moda"
+        },
+        {
+          "name": "Hogar",
+          "slug": "Artículos para el hogar y decoración"
+        },
+        {
+          "name": "Deportes",
+          "slug": "Equipos y accesorios deportivos"
+        },
+        {
+          "name": "Salud y Bienestar",
+          "slug": "Productos y servicios para la salud y el bienestar"
+        },
+        {
+          "name": "Libros",
+          "slug": "Libros de diferentes géneros y autores"
+        },
+        {
+          "name": "Juegos",
+          "slug": "Videojuegos y juegos de mesa"
+        },
+        {
+          "name": "Alimentación",
+          "slug": "Productos alimenticios y gourmet"
+        },
+        {
+          "name": "Electrodomésticos",
+          "slug": "Electrodomésticos para el hogar"
+        },
+        {
+          "name": "Jardinería",
+          "slug": "Productos y herramientas para jardinería"
+        },
+        {
+          "name": "Música",
+          "slug": "Instrumentos musicales y música en general"
+        },
+        {
+          "name": "Arte y Manualidades",
+          "slug": "Materiales para arte y proyectos de manualidades"
+        },
+        {
+          "name": "Automotriz",
+          "slug": "Productos y accesorios para vehículos"
+        },
+        {
+          "name": "Viajes",
+          "slug": "Equipaje y accesorios para viajes"
+        },
+        {
+          "name": "Bebés y Niños",
+          "slug": "Productos para bebés y niños"
+        }
+      ]
+      
+}
