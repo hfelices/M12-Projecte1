@@ -10,7 +10,7 @@ class Config:
     SECRET_KEY = environ.get("SECRET_KEY")
     ALLOWED_EXTENSIONS = environ.get("ALLOWED_EXTENSIONS")
     UPLOAD_FOLDER = environ.get("UPLOAD_FOLDER")
-
+    DEBUG = environ.get('DEBUG', True)
     #MAIL CONFIG
 
     MAIL_SENDER_NAME = environ.get('MAIL_SENDER_NAME')
@@ -24,3 +24,4 @@ class Config:
     DATABASE = environ.get("DATABASE")
     SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.abspath(os.path.dirname(__file__))  + "/" + DATABASE
     SQLALCHEMY_ECHO = environ.get("SQLALCHEMY_ECHO")
+

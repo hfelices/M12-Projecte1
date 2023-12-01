@@ -1,4 +1,4 @@
-from flask import Flask ,Blueprint, render_template, flash, redirect, url_for, request
+from flask import Flask ,Blueprint, render_template, flash, redirect, url_for, request ,current_app
 from flask_login import current_user, login_user, login_required, logout_user
 from . import login_manager
 from .models import User
