@@ -51,7 +51,7 @@ def login():
         return redirect(url_for("main_bp.item_list"))
 
     form = LoginForm()
-    if form.validate_on_submit(): # si s'ha enviat el formulari via POST i és correcte
+    if form.validate_on_submit(): #si s'ha enviat el formulari via POST i és correcte
         name = form.name.data
         plain_text_password = form.password.data
         logger.debug(f"Usuari {name} intenta autenticar-se")
