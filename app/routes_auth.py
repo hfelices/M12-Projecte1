@@ -3,7 +3,7 @@ from flask_login import current_user, login_user, login_required, logout_user
 from . import login_manager , mail_manager as mail
 from .models import User
 from .forms import LoginForm
-from . import db_manager as db
+from . import db_manager as db , logger
 from .forms import  CreateUserForm, LoginForm, ResendForm ,ProfileForm
 from werkzeug.security import check_password_hash, generate_password_hash
 from .helper_role import notify_identity_changed
