@@ -67,6 +67,12 @@ class ResendForm(FlaskForm):
         validators = [validators.DataRequired()]
         
         )
+    
+class BlockUserForm(FlaskForm):
+    message = TextAreaField(
+        validators = [validators.DataRequired()]
+        )
+    
    
 
 class DeleteProductForm(FlaskForm):

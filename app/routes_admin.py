@@ -7,7 +7,7 @@ from .forms import LoginForm
 from . import db_manager as db
 from sqlalchemyseed import load_entities_from_json
 from sqlalchemyseed import Seeder
-from .forms import  CreateUserForm, LoginForm
+from .forms import  CreateUserForm, LoginForm , BlockUserForm
 from werkzeug.security import check_password_hash, generate_password_hash
 from os import path
 import csv
@@ -101,17 +101,19 @@ def admin():
 @requireAdminRole.require(http_exception=403)
 def blockUser(id):
     user = User.query.get(id)
-    if request.method == 'POST':
+    form = BlockUserForm()
+    if request.method == 'POST' and form.validate_on_submit():
         
         blockedUser = BlockedUser()
         blockedUser.user_id = user.id
-        blockedUser.message = "aloha"
-
+        blockedUser.message = form.message.data
+        
         db.session.add(blockedUser)
         db.session.commit()
         return redirect(url_for('admin_bp.admin_users'))
     elif request.method == 'GET':
-        return render_template ('admin/block.html')
+        
+        return render_template ('admin/block.html', user=user, form=form )
 
 #UNBLOCK
 @admin_bp.route('/admin/users/<int:id>/unblock')

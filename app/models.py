@@ -1,6 +1,7 @@
 from . import db_manager as db
 from datetime import datetime
 from flask_login import UserMixin
+from sqlalchemy.orm import relationship
 def now():
     return datetime.now()
 
@@ -36,7 +37,7 @@ class User(UserMixin, db.Model):
     updated = db.Column(db.DATETIME, default=now(), onupdate=now(), nullable=False)
     email_token = db.Column(db.Text, nullable=False)
     verified = db.Column(db.Text, nullable=False)
-
+    blocked = relationship("BlockedUser", backref="user", uselist=False)
     def get_id(self):
         return self.name
 

@@ -55,30 +55,33 @@ def item_list():
 @login_required
 @requireWannerRole.require(http_exception=403)
 def create_item():
-    categories = Category.query.all()
-    form = ProductForm()
-    form.category_id.choices=[(categoria.id, categoria.name) for categoria in categories]
-    if form.validate_on_submit(): # si s'ha fet submit al formulari
-        # he de crear un nou item
-        
-        # dades del formulari a l'objecte item
-        new_product = Product()
-        form.populate_obj(new_product)
-        # insert!
-        
+    if current_user.blocked :
+        return redirect(url_for('auth_bp.profile'))
+    else:
+        categories = Category.query.all()
+        form = ProductForm()
+        form.category_id.choices=[(categoria.id, categoria.name) for categoria in categories]
+        if form.validate_on_submit(): # si s'ha fet submit al formulari
+            # he de crear un nou item
+            
+            # dades del formulari a l'objecte item
+            new_product = Product()
+            form.populate_obj(new_product)
+            # insert!
+            
 
-        file = form.photo.data
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            new_product.photo = filename
-            file.save(os.path.join(UPLOAD_FOLDER, filename))
+            file = form.photo.data
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                new_product.photo = filename
+                file.save(os.path.join(UPLOAD_FOLDER, filename))
 
-        db.session.add(new_product)
-        db.session.commit()
-        
-        return redirect(url_for('main_bp.item_list'))
-    else: 
-        return render_template('products/create-update-product.html', form = form)
+            db.session.add(new_product)
+            db.session.commit()
+            
+            return redirect(url_for('main_bp.item_list'))
+        else: 
+            return render_template('products/create-update-product.html', form = form)
 
 # Editar productes
 @main_bp.route('/products/update/<int:id>', methods=["GET", "POST"])
