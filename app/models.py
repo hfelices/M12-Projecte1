@@ -16,8 +16,8 @@ class Product(db.Model):
     created = db.Column(db.DATETIME, default=now(), nullable=False)
     updated = db.Column(db.DATETIME, default=now(), onupdate=now(), nullable=False)
 
-    category = db.relationship('Category', backref='products')
-    seller = db.relationship('User', backref='products')
+    # category = db.relationship('Category', backref='products')
+    # seller = db.relationship('User', backref='products')
 
 class Category(db.Model):
     __tablename__ = "categories"
@@ -39,3 +39,13 @@ class User(UserMixin, db.Model):
 
     def get_id(self):
         return self.name
+
+class BlockedUser(UserMixin, db.Model):
+    __tablename__ = "blocked_users"
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    message = db.Column(db.Text, nullable=False)
+    created = db.Column(db.DATETIME, default=now(), nullable=False)
+    
+   
+
+    

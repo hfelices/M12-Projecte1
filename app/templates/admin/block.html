@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h1>Editors zone</h1>
+<h2 class="text-danger">Restricted area</h2>
+{% if current_user['role'] == 'admin' %}
+<div style="margin-top: 5vh;">
+    <a href="/admin/users" style="text-decoration: none;" class="btn btn-primary">Mostrar usuaris</a>
+    <a href="/admin/tools" style="text-decoration: none;" class="btn btn-primary">Herramientas de admin</a>
+</div>
+{% endif %}
+{% endblock %}
