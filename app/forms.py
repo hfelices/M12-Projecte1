@@ -75,10 +75,12 @@ class BanForm(FlaskForm):
         validators = [validators.DataRequired()]
         )
     submit = SubmitField()
+
 class UnBanForm(FlaskForm):
     product_id = HiddenField(
         validators = [validators.DataRequired()]
         )
     submit = SubmitField()
+    
 class DeleteProductForm(FlaskForm):
     submit = SubmitField()
