@@ -6,8 +6,8 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from werkzeug.utils import secure_filename
 from . import db_manager as db
-from .models import Product, Category, User
-from .forms import ProductForm, DeleteProductForm
+from .models import Product, Category, User, Ban
+from .forms import ProductForm, DeleteProductForm, BanForm, UnBanForm
 from .config import Config
 from flask_login import LoginManager, current_user, login_required
 from werkzeug.security import generate_password_hash
@@ -48,7 +48,11 @@ def item_list():
     deleteForm = DeleteProductForm()
     if request.method == 'GET':
         items = Product.query.all()
-        return render_template('products/list.html', items=items, deleteForm=deleteForm)
+        bans = Ban.query.all()
+        items_ban = []
+        for ban in bans:
+            items_ban.append(ban.product_id)
+        return render_template('products/list.html', bans=items_ban, deleteForm=deleteForm, items=items)
 
 # Crear nou producte
 @main_bp.route('/products/create', methods=["GET", "POST"])
@@ -135,9 +139,12 @@ def delete_item(id):
 @requireViewPermission.require(http_exception=403)
 def show_item(id):
     deleteForm = DeleteProductForm()
+    banForm = BanForm()
+    unBanForm = UnBanForm()
     if request.method == 'GET':
         item = Product.query.get(id)
-        return render_template('products/details.html', item=item , deleteForm=deleteForm)
+        ban = Ban.query.get(id)
+        return render_template('products/details.html', item=item , deleteForm=deleteForm,ban=ban, banForm=banForm, unBanForm=unBanForm)
     
 
 

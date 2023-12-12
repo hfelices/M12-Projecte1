@@ -65,14 +65,14 @@ def login():
             notify_identity_changed()
             logger.info(f"Usuari {name} s'ha autenticat correctament")
             return redirect(url_for("main_bp.init"))
-
-        if user.verified != 'true' :
-            message = "Debe verificar el correo"
-        elif not check_password_hash(user.password, plain_text_password):
-            logger.warning(f"Usuari {name} no s'ha autenticat correctament")
-            message = "Nombre de usuario o contraseña incorrectos"
-        # si arriba aquí, és que no s'ha autenticat correctament
-        return render_template("users/login.html", form = form, message = message)
+        if user:
+            if user.verified != 'true' :
+                message = "Debe verificar el correo"
+            elif not check_password_hash(user.password, plain_text_password):
+                logger.warning(f"Usuari {name} no s'ha autenticat correctament")
+                message = "Nombre de usuario o contraseña incorrectos"
+            # si arriba aquí, és que no s'ha autenticat correctament
+            return render_template("users/login.html", form = form, message = message)
         
     return render_template('users/login.html', form = form , )
 

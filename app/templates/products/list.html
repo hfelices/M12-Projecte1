@@ -17,36 +17,112 @@
 
         <div class="row mt-4">
             {% for product in items %}
-            <div class="col-12 col-md-3 mb-3">
-                <a href="products/{{ product['id'] }}" style="text-decoration: none; color: inherit;">
-                    <div class="card mb-3">
-                        <img src="../../static/uploads/{{product['photo'] }}" alt="Descripción de la imagen"
-                            class="card-img-top">
-                        <div class="card-body">
-                            <h2 class="card-title">{{ product['title'] }}</h2>
-                            {% if product['description']|length > 34 %}
-                            <p class="card-text">{{ product['description'][:34] + '...' }}</p>
-                            {% else %}
-                            <p class="card-text">{{ product['description'] }}</p>
-                            {% endif %}
-                            <p class="card-text">{{ product['price'] }}€</p>
-                            {% if current_user['id'] == product['seller_id'] or current_user['role'] == 'admin'  %}
-                            <a href="/products/update/{{ product['id'] }}" class="btn btn-success edit-button">
-                                <span class="button-text">✎</span> Editar
-                            </a>
-                            {% endif %}
-                            {% if current_user['id'] == product['seller_id'] or current_user['role'] in ['admin','moderator'] %}
-                            <form action="/products/delete/{{ product['id'] }}" method="POST"
-                                onsubmit="return confirm('¿Estás seguro de que deseas eliminar este producto?')">
-                                {{ deleteForm.csrf_token }}
-                                <p>{{ deleteForm.submit(value="🗑 Eliminar", class="btn btn-danger delete-button") }}
-                                </p>
-                            </form>
-                            {% endif %}
+                {%if product['id'] not in bans%}
+                <div class="col-12 col-md-3 mb-3">
+                    <a href="products/{{ product['id'] }}" style="text-decoration: none; color: inherit;">
+                        <div class="card mb-3">
+                            <img src="../../static/uploads/{{product['photo'] }}" alt="Descripción de la imagen"
+                                class="card-img-top">
+                            <div class="card-body">
+                                <h2 class="card-title">{{ product['title'] }}</h2>
+                                {% if product['description']|length > 34 %}
+                                <p class="card-text">{{ product['description'][:34] + '...' }}</p>
+                                {% else %}
+                                <p class="card-text">{{ product['description'] }}</p>
+                                {% endif %}
+                                <p class="card-text">{{ product['price'] }}€</p>
+                                {% if current_user['id'] == product['seller_id'] or current_user['role'] == 'admin'  %}
+                                <a href="/products/update/{{ product['id'] }}" class="btn btn-success edit-button">
+                                    <span class="button-text">✎</span> Editar
+                                </a>
+                                {% endif %}
+                                {% if current_user['id'] == product['seller_id'] or current_user['role'] in ['admin','moderator'] %}
+                                <form action="/products/delete/{{ product['id'] }}" method="POST"
+                                    onsubmit="return confirm('¿Estás seguro de que deseas eliminar este producto?')">
+                                    {{ deleteForm.csrf_token }}
+                                    <p>{{ deleteForm.submit(value="🗑 Eliminar", class="btn btn-danger delete-button") }}
+                                    </p>
+                                </form>
+                                {% endif %}
+                            </div>
                         </div>
-                    </div>
-                </a>
-            </div>
-            {% endfor %}
+                    </a>
+                </div>
+                {%endif%}
+                {% endfor %}
+                {% for product in items %}
+                {%if product['id'] in bans and product['seller_id'] == current_user['id']%}
+                <div class="col-12 col-md-3 mb-3">
+                    <a href="products/{{ product['id'] }}" style="text-decoration: none; color: inherit;">
+                        <div class="card mb-3">
+                            <h1 style="color: red">Producto baneado</h1>
+                            <img src="../../static/uploads/{{product['photo'] }}" alt="Descripción de la imagen"
+                                class="card-img-top">
+                            <div class="card-body">
+                                <h2 class="card-title">{{ product['title'] }}</h2>
+                                {% if product['description']|length > 34 %}
+                                <p class="card-text">{{ product['description'][:34] + '...' }}</p>
+                                {% else %}
+                                <p class="card-text">{{ product['description'] }}</p>
+                                {% endif %}
+                                <p class="card-text">{{ product['price'] }}€</p>
+                                {% if current_user['id'] == product['seller_id'] or current_user['role'] == 'admin'  %}
+                                <a href="/products/update/{{ product['id'] }}" class="btn btn-success edit-button">
+                                    <span class="button-text">✎</span> Editar
+                                </a>
+                                {% endif %}
+                                {% if current_user['id'] == product['seller_id'] or current_user['role'] in ['admin','moderator'] %}
+                                <form action="/products/delete/{{ product['id'] }}" method="POST"
+                                    onsubmit="return confirm('¿Estás seguro de que deseas eliminar este producto?')">
+                                    {{ deleteForm.csrf_token }}
+                                    <p>{{ deleteForm.submit(value="🗑 Eliminar", class="btn btn-danger delete-button") }}
+                                    </p>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {%endif%}
+                {% endfor %}
+
+                {%if current_user['role'] in ['moderator']%}
+                <h1>Productos baneados:</h1>
+                {% for product in items %}
+                {%if product['id'] in bans%}
+                <div class="col-12 col-md-3 mb-3">
+                    <a href="products/{{ product['id'] }}" style="text-decoration: none; color: inherit;">
+                        <div class="card mb-3">
+                            <h5 style="color: red">Entrar para ver el motivo o quitar el baneo</h5>
+                            <img src="../../static/uploads/{{product['photo'] }}" alt="Descripción de la imagen"
+                                class="card-img-top">
+                            <div class="card-body">
+                                <h2 class="card-title">{{ product['title'] }}</h2>
+                                {% if product['description']|length > 34 %}
+                                <p class="card-text">{{ product['description'][:34] + '...' }}</p>
+                                {% else %}
+                                <p class="card-text">{{ product['description'] }}</p>
+                                {% endif %}
+                                <p class="card-text">{{ product['price'] }}€</p>
+                                {% if current_user['id'] == product['seller_id'] or current_user['role'] == 'admin'  %}
+                                <a href="/products/update/{{ product['id'] }}" class="btn btn-success edit-button">
+                                    <span class="button-text">✎</span> Editar
+                                </a>
+                                {% endif %}
+                                {% if current_user['id'] == product['seller_id'] or current_user['role'] in ['admin','moderator'] %}
+                                <form action="/products/delete/{{ product['id'] }}" method="POST"
+                                    onsubmit="return confirm('¿Estás seguro de que deseas eliminar este producto?')">
+                                    {{ deleteForm.csrf_token }}
+                                    <p>{{ deleteForm.submit(value="🗑 Eliminar", class="btn btn-danger delete-button") }}
+                                    </p>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {%endif%}
+                {% endfor %}
+                {%endif%}
         </div>
 {% endblock %}

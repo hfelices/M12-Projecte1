@@ -67,7 +67,18 @@ class ResendForm(FlaskForm):
         validators = [validators.DataRequired()]
         
         )
-   
-
+class BanForm(FlaskForm):
+    product_id = HiddenField(
+        validators = [validators.DataRequired()]
+        )
+    reason = StringField(
+        validators = [validators.DataRequired()]
+        )
+    submit = SubmitField()
+class UnBanForm(FlaskForm):
+    product_id = HiddenField(
+        validators = [validators.DataRequired()]
+        )
+    submit = SubmitField()
 class DeleteProductForm(FlaskForm):
     submit = SubmitField()

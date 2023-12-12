@@ -3,6 +3,11 @@
     {% extends 'layout.html' %}
     {% block content %}
     <div class="card w-55">
+        {%if ban%}
+        <h1 style="color:red">Producto baneado</h1>
+        <h4>Motivo: </h4>
+        {{ ban['reason'] }}
+        {%if current_user['role'] in ['moderator'] or current_user['id'] == item['seller_id']%}
         <img src="../../static/uploads/{{item['photo'] }}" class="card-img-top" alt="Descripción de la imagen">
         <div class="card-body">
             <h2 class="card-title">{{ item['title'] }}</h2>
@@ -21,6 +26,77 @@
                 <p>{{ deleteForm.submit(value="🗑 Eliminar", class="btn btn-danger delete-button") }}</p>
             </form>
             {% endif %}
+
+            {%if current_user['role'] in ['moderator'] and not ban%}
+            <form action="/admin/products/{{ item['id'] }}/ban" enctype="multipart/form-data"  method="POST">
+            {{ banForm.csrf_token }}
+            <div class="form-group">
+                {{ banForm.product_id(class="form-control", id=banForm.product_id.id, value=item.id) }}
+            </div>
+            <div class="form-group">
+                <label for="{{ banForm.reason.id }}">{{ banForm.reason.label }}</label>
+                {{ banForm.reason(class="form-control", id=banForm.reason.id) }}
+            </div>
+            <p>{{ banForm.submit(value="Ban", class="btn btn-danger delete-button") }}
+            </p>
+            </form>
+            {%elif current_user['role'] in ['moderator']%}
+            <form action="/admin/products/{{ item['id'] }}/unban" enctype="multipart/form-data"  method="POST">
+                {{ unBanForm.csrf_token }}
+                <div class="form-group">
+                    {{ unBanForm.product_id(class="form-control", id=unBanForm.product_id.id, value=item.id) }}
+                </div>
+                <p>{{ unBanForm.submit(value="unBan", class="btn btn-danger delete-button") }}
+                </p>
+                </form>
+            {%endif%}
+            </div>
+        {%endif%}
+        {%else%}
+        <img src="../../static/uploads/{{item['photo'] }}" class="card-img-top" alt="Descripción de la imagen">
+        <div class="card-body">
+            <h2 class="card-title">{{ item['title'] }}</h2>
+            <p class="card-text" style="word-wrap: break-word;">{{ item['description'] }}</p>
+            <p class="card-text">{{ item['price'] }}€</p>
+            {% if current_user['id'] == item['seller_id'] or current_user['role'] == 'admin'  %}
+            <a href="/products/update/{{ item['id'] }}">
+                <button class="btn btn-warning edit-button">
+                    <span class="button-text">✎</span> Editar
+                </button>
+            </a>
+            {% endif %}
+            {% if current_user['id'] == item['seller_id'] or current_user['role'] in ['admin','moderator'] %}
+            <form action="/products/delete/{{ item['id'] }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este producto?')">
+                {{ deleteForm.csrf_token }}
+                <p>{{ deleteForm.submit(value="🗑 Eliminar", class="btn btn-danger delete-button") }}</p>
+            </form>
+            {% endif %}
+
+            {%if current_user['role'] in ['moderator'] and not ban%}
+            <form action="/admin/products/{{ item['id'] }}/ban" enctype="multipart/form-data"  method="POST">
+            {{ banForm.csrf_token }}
+            <div class="form-group">
+                {{ banForm.product_id(class="form-control", id=banForm.product_id.id, value=item.id) }}
+            </div>
+            <div class="form-group">
+                <label for="{{ banForm.reason.id }}">{{ banForm.reason.label }}</label>
+                {{ banForm.reason(class="form-control", id=banForm.reason.id) }}
+            </div>
+            <p>{{ banForm.submit(value="Ban", class="btn btn-danger delete-button") }}
+            </p>
+            </form>
+            {%elif current_user['role'] in ['moderator']%}
+            <form action="/admin/products/{{ item['id'] }}/unban" enctype="multipart/form-data"  method="POST">
+                {{ unBanForm.csrf_token }}
+                <div class="form-group">
+                    {{ unBanForm.product_id(class="form-control", id=unBanForm.product_id.id, value=item.id) }}
+                </div>
+                <p>{{ unBanForm.submit(value="unBan", class="btn btn-danger delete-button") }}
+                </p>
+                </form>
+            {%endif%}
+            </div>
+        {% endif %}
+
         </div>
-    </div>
     {% endblock %}

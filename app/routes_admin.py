@@ -6,13 +6,13 @@ from .forms import LoginForm
 from . import db_manager as db
 from sqlalchemyseed import load_entities_from_json
 from sqlalchemyseed import Seeder
-from .forms import  CreateUserForm, LoginForm
+from .forms import  CreateUserForm, LoginForm, BanForm,UnBanForm
 from werkzeug.security import check_password_hash, generate_password_hash
 from os import path
 import csv
 from io import TextIOWrapper
 from . import db_manager as db
-from .models import Product, Category, User
+from .models import Product, Category, User, Ban
 from .helper_role import requireAdminRole, requireModeratePermission
 
 basedir = path.abspath(path.dirname(__file__))
@@ -22,6 +22,36 @@ basedir = path.abspath(path.dirname(__file__))
 admin_bp = Blueprint(
     "admin_bp", __name__, template_folder="templates", static_folder="static"
 )
+
+@admin_bp.route('/admin/products/<product_id>/ban', methods=['POST'])
+@login_required
+@requireModeratePermission.require(http_exception=403)
+def ban(product_id):
+    form = BanForm()
+    if form.validate_on_submit():
+        product = db.session.query(Product).filter(Product.id == product_id).one_or_none()
+        if product:
+            ban = Ban()
+            form.populate_obj(ban)
+            
+            db.session.add(ban)
+            db.session.commit()
+            
+            return redirect(url_for('main_bp.init'))
+        return redirect(url_for('main_bp.init'))
+    return redirect(url_for('main_bp.init'))
+
+@admin_bp.route('/admin/products/<product_id>/unban', methods=['POST'])
+@login_required
+@requireModeratePermission.require(http_exception=403)
+def unban(product_id):
+    form = UnBanForm()
+    if request.method == "POST" and form.validate_on_submit():
+        product = Ban.query.get_or_404(product_id)
+        db.session.delete(product)
+        db.session.commit()
+        return redirect(url_for('main_bp.init'))
+    return redirect(url_for('main_bp.init'))
 
 @admin_bp.route('/admin')
 @login_required

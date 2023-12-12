@@ -22,8 +22,14 @@ class Product(db.Model):
 class Category(db.Model):
     __tablename__ = "categories"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.Text, unique=True, nullable=False)
+    message = db.Column(db.Text, nullable=False)
     slug = db.Column(db.Text, unique=True, nullable=False)
+
+class Ban(db.Model):
+    __tablename__ = "banned_products"
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), primary_key=True)
+    reason = db.Column(db.Text, unique=True, nullable=False)
+    created = db.Column(db.DATETIME, default=now(), nullable=False)
 
 class User(UserMixin, db.Model):
     __tablename__ = "users"
