@@ -2,6 +2,16 @@
 
 {% block content %}
 <div class="container mt-4">
+    {% if blockedUser %}
+        
+            <div class="alert alert-danger" role="alert">
+                <strong>Has sido bloqueado, no puedes añadir nuevos productos.</strong> 
+                <br>
+                <strong>Motivo del bloqueo:</strong> {{blockedUser.message}}
+            </div>
+            
+        
+    {% endif %}
     <div class="card">
         <div class="card-body">
             <h2 class="card-title text-3xl font-bold text-primary mb-4">Tu nombre es: <span class="text-dark">{{ current_user.name }}</span></h2>

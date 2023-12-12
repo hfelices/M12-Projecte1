@@ -2,18 +2,20 @@ from flask import Flask ,Blueprint, render_template, flash, redirect, url_for, r
 from flask_login import current_user, login_user, login_required, logout_user
 from . import login_manager
 from .models import User
+from datetime import datetime
 from .forms import LoginForm
 from . import db_manager as db
 from sqlalchemyseed import load_entities_from_json
 from sqlalchemyseed import Seeder
-from .forms import  CreateUserForm, LoginForm, BanForm,UnBanForm
+from .forms import  CreateUserForm, LoginForm , BlockUserForm, BanForm,UnBanForm
 from werkzeug.security import check_password_hash, generate_password_hash
 from os import path
 import csv
 from io import TextIOWrapper
 from . import db_manager as db
-from .models import Product, Category, User, Ban
+from .models import Product, Category, User, BlockedUser, Ban
 from .helper_role import requireAdminRole, requireModeratePermission
+from sqlalchemy.orm import aliased
 
 basedir = path.abspath(path.dirname(__file__))
 
@@ -65,7 +67,12 @@ def admin_index():
 @requireAdminRole.require(http_exception=403)
 def admin_users():
     users = db.session.query(User).all()
-    return render_template('admin/users_list.html', users=users)
+    blockedUsers = db.session.query(BlockedUser.user_id).all()
+    blockedUsersId = list()
+    for a in blockedUsers:
+        blockedUsersId.append(a.user_id)
+
+    return render_template('admin/users_list.html', users=users, blockedUsersId = blockedUsersId)
 
 # Upload CSV
 @admin_bp.route('/admin/tools', methods=["GET","POST"])
@@ -115,3 +122,36 @@ def admin():
             db.session.commit()  
         return redirect(url_for('admin_bp.admin'))
     return render_template('admin/admin_tools.html')
+
+
+# BLOCK
+
+@admin_bp.route('/admin/users/<int:id>/block', methods=["GET", "POST"])
+@login_required
+@requireAdminRole.require(http_exception=403)
+def blockUser(id):
+    user = User.query.get(id)
+    form = BlockUserForm()
+    if request.method == 'POST' and form.validate_on_submit():
+        
+        blockedUser = BlockedUser()
+        blockedUser.user_id = user.id
+        blockedUser.message = form.message.data
+        
+        db.session.add(blockedUser)
+        db.session.commit()
+        return redirect(url_for('admin_bp.admin_users'))
+    elif request.method == 'GET':
+        
+        return render_template ('admin/block.html', user=user, form=form )
+
+#UNBLOCK
+@admin_bp.route('/admin/users/<int:id>/unblock')
+@login_required
+@requireAdminRole.require(http_exception=403)
+def unblockUser(id):
+    user = BlockedUser.query.get(id)
+    db.session.delete(user)
+    db.session.commit()
+    return redirect(url_for('admin_bp.admin_users'))
+

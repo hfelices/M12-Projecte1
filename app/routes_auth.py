@@ -1,7 +1,7 @@
 from flask import Flask ,Blueprint, render_template, flash, redirect, url_for, request ,current_app
 from flask_login import current_user, login_user, login_required, logout_user
 from . import login_manager , mail_manager as mail
-from .models import User
+from .models import User, BlockedUser
 from .forms import LoginForm
 from . import db_manager as db , logger
 from .forms import  CreateUserForm, LoginForm, ResendForm ,ProfileForm
@@ -19,7 +19,11 @@ auth_bp = Blueprint(
 @login_required
 def profile():
     form = ProfileForm(obj=current_user)
-
+    blockedUser = False
+    if current_user.blocked:
+        id = current_user.id
+        blockedUser = BlockedUser.query.get(id)
+    
     if form.validate_on_submit():
         current_user.name = form.name.data
 
@@ -42,7 +46,7 @@ def profile():
         logout_user()
         return redirect(url_for('auth_bp.profile'))
 
-    return render_template('/users/profile.html', form=form)
+    return render_template('/users/profile.html', form=form , blockedUser= blockedUser)
 
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():

@@ -80,7 +80,13 @@ class UnBanForm(FlaskForm):
     product_id = HiddenField(
         validators = [validators.DataRequired()]
         )
-    submit = SubmitField()
+     submit = SubmitField()
+    class BlockUserForm(FlaskForm):
+    message = TextAreaField(
+        validators = [validators.DataRequired()]
+        )
     
+   
+
 class DeleteProductForm(FlaskForm):
     submit = SubmitField()

@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h3 class="text-danger">Bloquear Usuario</h3>
+<div class="container mt-4">
+    <form method="POST" action="/admin/users/{{ user['id'] }}/block" enctype="multipart/form-data" class="p-4 rounded-lg" style="background-color: #cce5ff">
+        {{ form.csrf_token }}
+
+        <div class="form-group">
+            <label for="{{ form.message.id }}">{{ form.message.label }}</label>
+            {{ form.message(class="form-control", id=form.message.id) }}
+        </div>
+
+        <div class="mt-3">
+            <button type="submit" class="btn btn-danger btn-block">Bloquear</button>
+            <button type="reset" class="btn btn-secondary btn-block">Reiniciar</button>
+        </div>
+
+    </form>
+</div>
+
+{% endblock %}

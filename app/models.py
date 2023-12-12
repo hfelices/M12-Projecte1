@@ -1,6 +1,7 @@
 from . import db_manager as db
 from datetime import datetime
 from flask_login import UserMixin
+from sqlalchemy.orm import relationship
 def now():
     return datetime.now()
 
@@ -16,8 +17,8 @@ class Product(db.Model):
     created = db.Column(db.DATETIME, default=now(), nullable=False)
     updated = db.Column(db.DATETIME, default=now(), onupdate=now(), nullable=False)
 
-    category = db.relationship('Category', backref='products')
-    seller = db.relationship('User', backref='products')
+    # category = db.relationship('Category', backref='products')
+    # seller = db.relationship('User', backref='products')
 
 class Category(db.Model):
     __tablename__ = "categories"
@@ -42,6 +43,16 @@ class User(UserMixin, db.Model):
     updated = db.Column(db.DATETIME, default=now(), onupdate=now(), nullable=False)
     email_token = db.Column(db.Text, nullable=False)
     verified = db.Column(db.Text, nullable=False)
-
+    blocked = relationship("BlockedUser", backref="user", uselist=False)
     def get_id(self):
         return self.name
+
+class BlockedUser(UserMixin, db.Model):
+    __tablename__ = "blocked_users"
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    message = db.Column(db.Text, nullable=False)
+    created = db.Column(db.DATETIME, default=now(), nullable=False)
+    
+   
+
+    
