@@ -25,3 +25,8 @@ class Config:
     SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.abspath(os.path.dirname(__file__))  + "/" + DATABASE
     SQLALCHEMY_ECHO = environ.get("SQLALCHEMY_ECHO")
 
+    # LOGGING
+    # environ.get('LOG_LEVEL', 'DEBUG').upper()
+    LOG_LEVEL = 'DEBUG'
+            
+        

@@ -9,6 +9,8 @@ from .helper_mail import MailManager
 from werkzeug.local import LocalProxy
 from flask import current_app
 from flask_debugtoolbar import DebugToolbarExtension
+from logging.handlers import RotatingFileHandler
+import logging
 
 
 db_manager = SQLAlchemy()
@@ -29,6 +31,24 @@ def create_app():
     mail_manager.init_app(app)
     toolbar.init_app(app)
     
+    #Logging
+    log_handler = RotatingFileHandler('app.log', maxBytes=10240, backupCount=3)
+    log_handler.setFormatter(logging.Formatter(
+    '%(asctime)s %(levelname)s: %(message)s '
+    '[in %(pathname)s:%(lineno)d]'
+    ))
+    log_handler.setLevel(logging.DEBUG)
+    app.logger.addHandler(log_handler)
+    
+    
+
+    log_level = app.config.get('LOG_LEVEL')
+    if log_level not in ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']:
+        raise ValueError('Nivell de registre no vàlid')
+        app.logger.setLevel(getattr(logging, log_level))
+
+    
+
     # csrf = CSRFProtect(app)
     # csrf.init_app(app)
     with app.app_context():
