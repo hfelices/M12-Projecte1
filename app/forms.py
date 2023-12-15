@@ -65,8 +65,8 @@ class ResendForm(FlaskForm):
         )
     password = PasswordField(
         validators = [validators.DataRequired()]
-        
         )
+    
 class BanForm(FlaskForm):
     product_id = HiddenField(
         validators = [validators.DataRequired()]
