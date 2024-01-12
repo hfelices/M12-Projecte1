@@ -2,10 +2,13 @@ from . import db_manager as db
 from datetime import datetime
 from flask_login import UserMixin
 from sqlalchemy.orm import relationship
+from flask_login import UserMixin
+from .mixins import BaseMixin, SerializableMixin
+
 def now():
     return datetime.now()
 
-class Product(db.Model):
+class Product(db.Model, BaseMixin, SerializableMixin):
     __tablename__ = "products"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.Text, nullable=False)
@@ -26,13 +29,13 @@ class Category(db.Model):
     message = db.Column(db.Text, nullable=False)
     slug = db.Column(db.Text, unique=True, nullable=False)
 
-class Ban(db.Model):
+class Ban(db.Model, BaseMixin, SerializableMixin):
     __tablename__ = "banned_products"
     product_id = db.Column(db.Integer, db.ForeignKey('products.id'), primary_key=True)
     reason = db.Column(db.Text, unique=True, nullable=False)
     created = db.Column(db.DATETIME, default=now(), nullable=False)
 
-class User(UserMixin, db.Model):
+class User(UserMixin, db.Model, BaseMixin, SerializableMixin):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.Text, unique=True, nullable=False)
@@ -47,7 +50,7 @@ class User(UserMixin, db.Model):
     def get_id(self):
         return self.name
 
-class BlockedUser(UserMixin, db.Model):
+class BlockedUser(UserMixin, db.Model, BaseMixin, SerializableMixin):
     __tablename__ = "blocked_users"
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     message = db.Column(db.Text, nullable=False)
