@@ -55,7 +55,26 @@ class BlockedUser(UserMixin, db.Model, BaseMixin, SerializableMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     message = db.Column(db.Text, nullable=False)
     created = db.Column(db.DATETIME, default=now(), nullable=False)
+
+class Order(UserMixin, db.Model, BaseMixin, SerializableMixin):
+    __tablename__ = "orders"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'))
+    buyer_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    offer = db.Column(db.DECIMAL(10, 2))
+    created = db.Column(db.DateTime, default=now(), nullable=False)
     
+    product = relationship("Product", back_populates="orders")
+    buyer = relationship("User", back_populates="orders")
+
+
+class ConfirmedOrder(UserMixin,db.Model, BaseMixin, SerializableMixin):
+    __tablename__ = "confirmed_orders"
+    order_id = db.Column(db.Integer, primary_key=True)
+    created = db.Column(db.DateTime, default=now(), nullable=False)
+    
+    order = relationship("Order", backref="confirmed_order")
+    order = relationship("Order", backref="confirmed_order", foreign_keys=[order_id])
    
 
     
