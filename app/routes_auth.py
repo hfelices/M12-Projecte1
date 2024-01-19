@@ -84,7 +84,7 @@ def login():
 def load_user(name):
     if name is not None:
         # select amb 1 resultat o cap
-        user_or_none =  User.get_all_filtered_by(User.name == name)
+        user_or_none =  User.get_filtered_by(name=name)
         return user_or_none
     return None
 
@@ -128,9 +128,9 @@ def register():
 @auth_bp.route('/verify/<name>/<token>', methods=["GET"])
 def verify(name, token):
     form = LoginForm()
-    verify =  User.get_filtered_by(User.email_token == token)
+    verify =  User.get_filtered_by(email_token= token)
     if verify:
-        user = User.get_filtered_by(User.name == name)
+        user = User.get_filtered_by(name=name)
         user.verified = 'true'
         user.updated = datetime.utcnow()
         user.update()
