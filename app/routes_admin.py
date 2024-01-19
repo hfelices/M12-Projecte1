@@ -31,13 +31,18 @@ admin_bp = Blueprint(
 def ban(product_id):
     form = BanForm()
     if form.validate_on_submit():
-        product = db.session.query(Product).filter(Product.id == product_id).one_or_none()
+        product = Product.get(product_id)
+        # product = db.session.query(Product).filter(Product.id == product_id).one_or_none()
         if product:
+
             ban = Ban()
             form.populate_obj(ban)
-            
-            db.session.add(ban)
-            db.session.commit()
+            print(f"""
+                  ha entrado
+            """)
+            ban.save()
+            # db.session.add(ban)
+            # db.session.commit()
             
             return redirect(url_for('main_bp.init'))
         return redirect(url_for('main_bp.init'))
@@ -49,9 +54,10 @@ def ban(product_id):
 def unban(product_id):
     form = UnBanForm()
     if request.method == "POST" and form.validate_on_submit():
-        product = Ban.query.get_or_404(product_id)
-        db.session.delete(product)
-        db.session.commit()
+        product = Ban.get(product_id)
+        product.delete()
+        # db.session.delete(product)
+        # db.session.commit()
         return redirect(url_for('main_bp.init'))
     return redirect(url_for('main_bp.init'))
 
@@ -66,8 +72,9 @@ def admin_index():
 @login_required
 @requireAdminRole.require(http_exception=403)
 def admin_users():
-    users = db.session.query(User).all()
-    blockedUsers = db.session.query(BlockedUser.user_id).all()
+    users = User.get_all()
+    # BlockedUser.db_enable_debug()
+    blockedUsers = BlockedUser.db_query(BlockedUser.user_id).all()
     blockedUsersId = list()
     for a in blockedUsers:
         blockedUsersId.append(a.user_id)
@@ -87,29 +94,34 @@ def admin():
             csv_reader = csv.reader(csv_file, delimiter=',')
             for row in csv_reader:
                 newUser = User(id=row[0], name=row[1], email=row[2],password=generate_password_hash(row[3]))
-                db.session.add(newUser)
-                db.session.commit()
+                User.save(newUser)
+                # db.session.add(newUser)
+                # db.session.commit()
         elif(table == 'products'):
             csv_file = request.files['file']
             csv_file = TextIOWrapper(csv_file, encoding='utf-8')
             csv_reader = csv.reader(csv_file, delimiter=',')
             for row in csv_reader:
                 newProduct = Product(id=row[0], title=row[1],description=row[2],photo=row[3],price=row[4],category_id=row[5],seller_id=row[1])
-                db.session.add(newProduct)
-                db.session.commit()
+                Product.save(newProduct)
+                # db.session.add(newProduct)
+                # db.session.commit()
         elif(table == 'categories'):
             csv_file = request.files['file']
             csv_file = TextIOWrapper(csv_file, encoding='utf-8')
             csv_reader = csv.reader(csv_file, delimiter=',')
             for row in csv_reader:
                 newCategory = Category(id=row[0], name=row[1],slug=row[2])
-                db.session.add(newCategory)
-                db.session.commit()
+                Category.save(newCategory)
+                # db.session.add(newCategory)
+                # db.session.commit()
         elif(table== 'hash'):
-            users = User.query.all()
+            # users = User.query.all()
+            users = User.get_all()
             for user in users:
                 user.password = generate_password_hash("user.password")
-            db.session.commit()
+                User.update()
+            # db.session.commit()
         elif(table== 'categories_seed'):
             
             # load entities
@@ -124,13 +136,13 @@ def admin():
     return render_template('admin/admin_tools.html')
 
 
-# BLOCK
+# BLOCK USER
 
 @admin_bp.route('/admin/users/<int:id>/block', methods=["GET", "POST"])
 @login_required
 @requireAdminRole.require(http_exception=403)
 def blockUser(id):
-    user = User.query.get(id)
+    user = User.get(id)
     form = BlockUserForm()
     if request.method == 'POST' and form.validate_on_submit():
         
@@ -138,20 +150,19 @@ def blockUser(id):
         blockedUser.user_id = user.id
         blockedUser.message = form.message.data
         
-        db.session.add(blockedUser)
-        db.session.commit()
+        BlockedUser.save(blockedUser)
+        
         return redirect(url_for('admin_bp.admin_users'))
     elif request.method == 'GET':
         
         return render_template ('admin/block.html', user=user, form=form )
 
-#UNBLOCK
+#UNBLOCK USER
 @admin_bp.route('/admin/users/<int:id>/unblock')
 @login_required
 @requireAdminRole.require(http_exception=403)
 def unblockUser(id):
-    user = BlockedUser.query.get(id)
-    db.session.delete(user)
-    db.session.commit()
+    user = BlockedUser.get(id)
+    user.delete()
     return redirect(url_for('admin_bp.admin_users'))
 

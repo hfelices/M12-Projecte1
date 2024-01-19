@@ -23,10 +23,10 @@ class Product(db.Model, BaseMixin, SerializableMixin):
     # category = db.relationship('Category', backref='products')
     # seller = db.relationship('User', backref='products')
 
-class Category(db.Model):
+class Category(db.Model, BaseMixin, SerializableMixin):
     __tablename__ = "categories"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    message = db.Column(db.Text, nullable=False)
+    name = db.Column(db.Text, nullable=False)
     slug = db.Column(db.Text, unique=True, nullable=False)
 
 class Ban(db.Model, BaseMixin, SerializableMixin):
