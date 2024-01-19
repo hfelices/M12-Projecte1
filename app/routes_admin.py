@@ -72,8 +72,9 @@ def admin_index():
 @login_required
 @requireAdminRole.require(http_exception=403)
 def admin_users():
-    users = db.session.query(User).all()
-    blockedUsers = db.session.query(BlockedUser.user_id).all()
+    users = User.get_all()
+    # BlockedUser.db_enable_debug()
+    blockedUsers = BlockedUser.db_query(BlockedUser.user_id).all()
     blockedUsersId = list()
     for a in blockedUsers:
         blockedUsersId.append(a.user_id)
@@ -135,13 +136,13 @@ def admin():
     return render_template('admin/admin_tools.html')
 
 
-# BLOCK
+# BLOCK USER
 
 @admin_bp.route('/admin/users/<int:id>/block', methods=["GET", "POST"])
 @login_required
 @requireAdminRole.require(http_exception=403)
 def blockUser(id):
-    user = User.query.get(id)
+    user = User.get(id)
     form = BlockUserForm()
     if request.method == 'POST' and form.validate_on_submit():
         
@@ -149,20 +150,19 @@ def blockUser(id):
         blockedUser.user_id = user.id
         blockedUser.message = form.message.data
         
-        db.session.add(blockedUser)
-        db.session.commit()
+        BlockedUser.save(blockedUser)
+        
         return redirect(url_for('admin_bp.admin_users'))
     elif request.method == 'GET':
         
         return render_template ('admin/block.html', user=user, form=form )
 
-#UNBLOCK
+#UNBLOCK USER
 @admin_bp.route('/admin/users/<int:id>/unblock')
 @login_required
 @requireAdminRole.require(http_exception=403)
 def unblockUser(id):
-    user = BlockedUser.query.get(id)
-    db.session.delete(user)
-    db.session.commit()
+    user = BlockedUser.get(id)
+    user.delete()
     return redirect(url_for('admin_bp.admin_users'))
 
