@@ -93,29 +93,34 @@ def admin():
             csv_reader = csv.reader(csv_file, delimiter=',')
             for row in csv_reader:
                 newUser = User(id=row[0], name=row[1], email=row[2],password=generate_password_hash(row[3]))
-                db.session.add(newUser)
-                db.session.commit()
+                User.save(newUser)
+                # db.session.add(newUser)
+                # db.session.commit()
         elif(table == 'products'):
             csv_file = request.files['file']
             csv_file = TextIOWrapper(csv_file, encoding='utf-8')
             csv_reader = csv.reader(csv_file, delimiter=',')
             for row in csv_reader:
                 newProduct = Product(id=row[0], title=row[1],description=row[2],photo=row[3],price=row[4],category_id=row[5],seller_id=row[1])
-                db.session.add(newProduct)
-                db.session.commit()
+                Product.save(newProduct)
+                # db.session.add(newProduct)
+                # db.session.commit()
         elif(table == 'categories'):
             csv_file = request.files['file']
             csv_file = TextIOWrapper(csv_file, encoding='utf-8')
             csv_reader = csv.reader(csv_file, delimiter=',')
             for row in csv_reader:
                 newCategory = Category(id=row[0], name=row[1],slug=row[2])
-                db.session.add(newCategory)
-                db.session.commit()
+                Category.save(newCategory)
+                # db.session.add(newCategory)
+                # db.session.commit()
         elif(table== 'hash'):
-            users = User.query.all()
+            # users = User.query.all()
+            users = User.get_all()
             for user in users:
                 user.password = generate_password_hash("user.password")
-            db.session.commit()
+                User.update()
+            # db.session.commit()
         elif(table== 'categories_seed'):
             
             # load entities
