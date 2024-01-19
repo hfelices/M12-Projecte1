@@ -47,8 +47,8 @@ def init():
 def item_list():
     deleteForm = DeleteProductForm()
     if request.method == 'GET':
-        items = Product.query.all()
-        bans = Ban.query.all()
+        items = Product.get_all()
+        bans = Ban.get_all()
         items_ban = []
         for ban in bans:
             items_ban.append(ban.product_id)
@@ -62,7 +62,7 @@ def create_item():
     if current_user.blocked :
         return redirect(url_for('auth_bp.profile'))
     else:
-        categories = Category.query.all()
+        categories = Category.get_all()
         form = ProductForm()
         form.category_id.choices=[(categoria.id, categoria.name) for categoria in categories]
         if form.validate_on_submit(): # si s'ha fet submit al formulari
@@ -79,9 +79,9 @@ def create_item():
                 filename = secure_filename(file.filename)
                 new_product.photo = filename
                 file.save(os.path.join(UPLOAD_FOLDER, filename))
-
-            db.session.add(new_product)
-            db.session.commit()
+            new_product.save()
+            # db.session.add(new_product)
+            # db.session.commit()
             
             return redirect(url_for('main_bp.item_list'))
         else: 
@@ -92,20 +92,20 @@ def create_item():
 @login_required
 @requireEditPermission.require(http_exception=403)
 def update_item(id):
-    categories = Category.query.all()
-    product = Product.query.get_or_404(id)
+    categories = Category.get_all()
+    product = Product.get(id)
     form = ProductForm(obj = product)
     form.category_id.choices=[(categoria.id, categoria.name) for categoria in categories]
         
     if request.method == 'GET' :
-        categories = Category.query.all()
+        categories = Category.get_all()
         
         return render_template('products/create-update-product.html', categories=categories, product=product, form = form)
     elif request.method == 'POST' and form.validate_on_submit():
         # he de crear un nou item
         
         # dades del formulari a l'objecte item
-        new_product = Product.query.get_or_404(id)
+        new_product = Product.get(id)
         form.populate_obj(new_product)
         # insert!
         
@@ -116,8 +116,8 @@ def update_item(id):
             file.save(os.path.join(UPLOAD_FOLDER, filename))
         
         new_product.updated = datetime.utcnow()
-
-        db.session.commit()
+        new_product.update()
+        # db.session.commit()
 
     return redirect(url_for('main_bp.item_list'))
 
@@ -126,12 +126,13 @@ def update_item(id):
 @login_required
 @requireViewPermission.require(http_exception=403)
 def delete_item(id):
-    product = Product.query.get_or_404(id)
+    product = Product.get(id)
     form = DeleteProductForm(obj = product)
     
     if request.method == "POST" and form.validate_on_submit():
-        db.session.delete(product)
-        db.session.commit()
+        product.delete()
+        # db.session.delete(product)
+        # db.session.commit()
         return redirect(url_for("main_bp.item_list"))
 
     return render_template("/products/list.html")
@@ -145,8 +146,8 @@ def show_item(id):
     banForm = BanForm()
     unBanForm = UnBanForm()
     if request.method == 'GET':
-        item = Product.query.get(id)
-        ban = Ban.query.get(id)
+        item = Product.get(id)
+        ban = Ban.get(id)
         return render_template('products/details.html', item=item , deleteForm=deleteForm,ban=ban, banForm=banForm, unBanForm=unBanForm)
     
 

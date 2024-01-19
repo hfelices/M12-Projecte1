@@ -31,13 +31,18 @@ admin_bp = Blueprint(
 def ban(product_id):
     form = BanForm()
     if form.validate_on_submit():
-        product = db.session.query(Product).filter(Product.id == product_id).one_or_none()
+        product = Product.get(product_id)
+        # product = db.session.query(Product).filter(Product.id == product_id).one_or_none()
         if product:
+
             ban = Ban()
             form.populate_obj(ban)
-            
-            db.session.add(ban)
-            db.session.commit()
+            print(f"""
+                  ha entrado
+            """)
+            ban.save()
+            # db.session.add(ban)
+            # db.session.commit()
             
             return redirect(url_for('main_bp.init'))
         return redirect(url_for('main_bp.init'))
@@ -49,9 +54,10 @@ def ban(product_id):
 def unban(product_id):
     form = UnBanForm()
     if request.method == "POST" and form.validate_on_submit():
-        product = Ban.query.get_or_404(product_id)
-        db.session.delete(product)
-        db.session.commit()
+        product = Ban.get(product_id)
+        product.delete()
+        # db.session.delete(product)
+        # db.session.commit()
         return redirect(url_for('main_bp.init'))
     return redirect(url_for('main_bp.init'))
 
