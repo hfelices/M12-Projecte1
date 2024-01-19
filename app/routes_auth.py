@@ -22,7 +22,7 @@ def profile():
     blockedUser = False
     if current_user.blocked:
         id = current_user.id
-        blockedUser = BlockedUser.query.get(id)
+        blockedUser = BlockedUser.get(id)
     
     if form.validate_on_submit():
         current_user.name = form.name.data
@@ -42,7 +42,7 @@ def profile():
             hashed_password = generate_password_hash(form.password.data)
             current_user.password = hashed_password
 
-        db.session.commit()
+        current_user.update()
         logout_user()
         return redirect(url_for('auth_bp.profile'))
 
@@ -84,7 +84,7 @@ def login():
 def load_user(name):
     if name is not None:
         # select amb 1 resultat o cap
-        user_or_none = db.session.query(User).filter(User.name == name).one_or_none()
+        user_or_none =  User.get_all_filtered_by(User.name == name)
         return user_or_none
     return None
 
@@ -115,8 +115,7 @@ def register():
             new_user.email_token = token
             new_user.verified = 'false'
             new_user.password= generate_password_hash(new_user.password)
-            db.session.add(new_user)
-            db.session.commit()
+            new_user.save()
             msg = f"""
 
             Accede a esta página para verificar el mail: http://127.0.0.1:5000/verify/{new_user.name}/{token}
@@ -129,29 +128,15 @@ def register():
 @auth_bp.route('/verify/<name>/<token>', methods=["GET"])
 def verify(name, token):
     form = LoginForm()
-    verify = db.session.query(User).filter(User.email_token == token).one_or_none()
+    verify =  User.get_filtered_by(User.email_token == token)
     if verify:
-        user = db.session.query(User).filter(User.name == name).one_or_none()
+        user = User.get_filtered_by(User.name == name)
         user.verified = 'true'
         user.updated = datetime.utcnow()
-        db.session.commit()
+        user.update()
         return render_template("users/login.html", message = "Email verificado con éxito" ,form = form)
     else:
         return render_template("users/login.html", message = "Error al verificar" , form = form)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -173,7 +158,7 @@ def resend():
             token = secrets.token_urlsafe(20)
             user.email_token = token
             user.verified = 'false'
-            db.session.commit()
+            user.update()
             msg = f"""
 
             Accede a esta página para verificar el mail: http://127.0.0.1:5000/verify/{user.name}/{token}
