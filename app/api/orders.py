@@ -27,4 +27,4 @@ def delete_confirmed_order(id):
         order.delete()
         return json_response(order.to_dict())
     else:
-        return not_found("Item not found")
+        return not_found("Order not found")
