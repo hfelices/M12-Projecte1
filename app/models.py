@@ -1,80 +1,78 @@
 from . import db_manager as db
-from datetime import datetime
-from flask_login import UserMixin
+from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin
 from .mixins import BaseMixin, SerializableMixin
 
-def now():
-    return datetime.now()
-
 class Product(db.Model, BaseMixin, SerializableMixin):
     __tablename__ = "products"
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    title = db.Column(db.Text, nullable=False)
-    description = db.Column(db.Text, nullable=False)
-    photo = db.Column(db.Text)
-    price = db.Column(db.DECIMAL(10, 2), nullable=False)
-    category_id = db.Column(db.Integer, db.ForeignKey('categories.id'))
-    seller_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    created = db.Column(db.DATETIME, default=now(), nullable=False)
-    updated = db.Column(db.DATETIME, default=now(), onupdate=now(), nullable=False)
-
-    # category = db.relationship('Category', backref='products')
-    # seller = db.relationship('User', backref='products')
-
-class Category(db.Model, BaseMixin, SerializableMixin):
-    __tablename__ = "categories"
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.Text, nullable=False)
-    slug = db.Column(db.Text, unique=True, nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String, nullable=False)
+    description = db.Column(db.String, nullable=False)
+    photo = db.Column(db.String, nullable=False)
+    price = db.Column(db.Numeric(precision=10, scale=2), nullable=False)
+    category_id = db.Column(db.Integer, db.ForeignKey("categories.id"), nullable=False)
+    seller_id = db.Column(db.Integer) #db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    created = db.Column(db.DateTime, server_default=func.now())
+    updated = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
+    banned = relationship("Ban", backref="product", uselist=False)
 
 class Ban(db.Model, BaseMixin, SerializableMixin):
     __tablename__ = "banned_products"
-    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), primary_key=True)
-    reason = db.Column(db.Text, unique=True, nullable=False)
-    created = db.Column(db.DATETIME, default=now(), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey("products.id"), primary_key=True)
+    reason = db.Column(db.String, nullable=False)
+    created = db.Column(db.DateTime, server_default=func.now())
 
-class User(UserMixin, db.Model, BaseMixin, SerializableMixin):
+class Category(db.Model, BaseMixin, SerializableMixin):
+    __tablename__ = "categories"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String, nullable=False)
+    slug = db.Column(db.String, nullable=False)
+
+class User(db.Model,UserMixin , BaseMixin, SerializableMixin):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.Text, unique=True, nullable=False)
-    email = db.Column(db.Text, unique=True, nullable=False)
-    password = db.Column(db.Text, nullable=False)
-    role = db.Column(db.Text, nullable=False, default='wanner')
-    created = db.Column(db.DATETIME, default=now(), nullable=False)
-    updated = db.Column(db.DATETIME, default=now(), onupdate=now(), nullable=False)
-    email_token = db.Column(db.Text, nullable=False)
-    verified = db.Column(db.Text, nullable=False)
+    name = db.Column(db.String, unique=True)
+    email =db. Column(db.String, unique=True)
+    password = db.Column(db.String)
+    role = db.Column(db.String, nullable=False)
+    created = db.Column(db.DateTime, server_default=func.now())
+    updated = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
+    email_token = db.Column(db.String(20))
+    verified = db.Column(db.Integer, default=0, nullable=False)
     blocked = relationship("BlockedUser", backref="user", uselist=False)
+     # Class variable from SerializableMixin
+    exclude_attr = ['password']
     def get_id(self):
         return self.name
 
-class BlockedUser(UserMixin, db.Model, BaseMixin, SerializableMixin):
+class BlockedUser(db.Model , BaseMixin, SerializableMixin):
     __tablename__ = "blocked_users"
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
-    message = db.Column(db.Text, nullable=False)
-    created = db.Column(db.DATETIME, default=now(), nullable=False)
+    message = db.Column(db.String, nullable=False)
+    created = db.Column(db.DateTime, server_default=func.now())
 
-class Order(UserMixin, db.Model, BaseMixin, SerializableMixin):
+
+
+class Order(db.Model, BaseMixin, SerializableMixin):
     __tablename__ = "orders"
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    product_id = db.Column(db.Integer, db.ForeignKey('products.id'))
-    buyer_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    offer = db.Column(db.DECIMAL(10, 2))
-    created = db.Column(db.DateTime, default=now(), nullable=False)
-    
-    product = relationship("Product", back_populates="orders")
-    buyer = relationship("User", back_populates="orders")
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey("products.id"), nullable=False)
+    buyer_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    offer = db.Column(db.Numeric(precision=10, scale=2))
+    created = db.Column(db.DateTime, server_default=func.now())
 
+    # Unique constraint for product_id and buyer_id
+    __table_args__ = (db.UniqueConstraint('product_id', 'buyer_id', name='uc_product_buyer'),)
 
-class ConfirmedOrder(UserMixin,db.Model, BaseMixin, SerializableMixin):
+    # Relationships
+    product = relationship("Product", backref="orders")
+    buyer = relationship("User", backref="orders")
+
+class ConfirmedOrder(db.Model, BaseMixin, SerializableMixin):
     __tablename__ = "confirmed_orders"
-    order_id = db.Column(db.Integer, primary_key=True)
-    created = db.Column(db.DateTime, default=now(), nullable=False)
-    
-    order = relationship("Order", backref="confirmed_order")
-    order = relationship("Order", backref="confirmed_order", foreign_keys=[order_id])
-   
+    order_id = db.Column(db.Integer, db.ForeignKey("orders.id"), primary_key=True)
+    created = db.Column(db.DateTime, server_default=func.now())
 
-    
+    # Relationship
+    order = relationship("Order", backref="confirmed_order", uselist=False)
