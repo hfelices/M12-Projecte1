@@ -12,11 +12,9 @@ class Product(db.Model, BaseMixin, SerializableMixin):
     photo = db.Column(db.String, nullable=False)
     price = db.Column(db.Numeric(precision=10, scale=2), nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey("categories.id"), nullable=False)
-<<<<<<< HEAD
-    seller_id = db.Column(db.Integer) #db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-=======
+
     seller_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
->>>>>>> 60ca2b1eafddc17518dd6bf6233109774adfec8c
+
     created = db.Column(db.DateTime, server_default=func.now())
     updated = db.Column(db.DateTime, server_default=func.now(), onupdate=func.now())
     banned = relationship("Ban", backref="product", uselist=False)
@@ -33,15 +31,14 @@ class Category(db.Model, BaseMixin, SerializableMixin):
     name = db.Column(db.String, nullable=False)
     slug = db.Column(db.String, nullable=False)
 
-<<<<<<< HEAD
+
 class Status(db.Model, BaseMixin, SerializableMixin):
     __tablename__ = "statuses"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     slug = db.Column(db.String, nullable=False)
 
-=======
->>>>>>> 60ca2b1eafddc17518dd6bf6233109774adfec8c
+
 class User(db.Model,UserMixin , BaseMixin, SerializableMixin):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
