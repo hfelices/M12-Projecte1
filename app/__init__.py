@@ -2,13 +2,14 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import os
 from flask_wtf.csrf import CSRFProtect
+from flask_httpauth import HTTPBasicAuth
 from .config import Config
 from flask_login import LoginManager
 from flask_principal import Principal
 from .helper_mail import MailManager
 from werkzeug.local import LocalProxy
 from flask import current_app
-from flask_debugtoolbar import DebugToolbarExtension
+
 from logging.handlers import RotatingFileHandler
 import logging
 
@@ -18,7 +19,7 @@ login_manager = LoginManager()
 principal_manager =  Principal()
 mail_manager = MailManager()
 logger = LocalProxy(lambda: current_app.logger)
-toolbar = DebugToolbarExtension()
+
 
 def create_app():
     app = Flask(__name__)
@@ -29,7 +30,7 @@ def create_app():
     db_manager.init_app(app)
     principal_manager.init_app(app)
     mail_manager.init_app(app)
-    toolbar.init_app(app)
+   
     
     #Logging
     log_handler = RotatingFileHandler('app.log', maxBytes=10240, backupCount=3)

@@ -2,7 +2,7 @@ from . import api_bp
 from .errors import not_found, bad_request
 from .. import db_manager as db
 from ..models import Category
-from ..helper_json import json_request, json_response
+from .helper_json import json_request, json_response
 from flask import  request
 
 

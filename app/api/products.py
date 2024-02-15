@@ -1,10 +1,10 @@
 from . import api_bp
-from .errors import not_found, bad_request
+from .errors import not_found, bad_request , forbidden_access
 from .. import db_manager as db
 from ..models import Category , Product, Order
-from ..helper_json import json_request, json_response
+from .helper_json import json_request, json_response
 from flask import  request, current_app
-
+from .helper_auth import basic_auth, token_auth
 
 
 # Get product filtered by title
@@ -26,12 +26,16 @@ def get_product(id):
 
 # Update product
 @api_bp.route('/products/<int:id>', methods=['PUT'])
+@token_auth.login_required
 def update_product(id):
     product = Product.get(id)
-    data = json_request(['title','description', 'photo', 'price'],False)
-    current_app.logger.debug(data)
-    product.update(**data)
-    return json_response(product.to_dict())
+    if basic_auth.current_user().id == product.seller_id :
+        data = json_request(['title','description', 'photo', 'price'],False)
+        current_app.logger.debug(data)
+        product.update(**data)
+        return json_response(product.to_dict())
+    else: 
+        return forbidden_access("You are not the owner of this product")
 
 
 # Get ofers filtered by product id
