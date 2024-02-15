@@ -13,7 +13,6 @@ from flask_login import LoginManager, current_user, login_required
 from werkzeug.security import generate_password_hash
 from .helper_role import requireAdminRole, requireViewPermission, requireEditPermission, requireModeratorRole , requireWannerRole
 
-
 ALLOWED_EXTENSIONS = Config.ALLOWED_EXTENSIONS
 UPLOAD_FOLDER = Config.UPLOAD_FOLDER
 # Comando para iniciar la app flask

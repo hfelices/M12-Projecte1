@@ -5,7 +5,7 @@ from .helper_json import json_request, json_response
 from flask import current_app, request
 from ..models import Order, User, ConfirmedOrder, Product
 from .helper_auth import basic_auth, token_auth
-
+from sqlalchemy import select
 # Post new confirmed order
 @api_bp.route('/orders/<int:id>/confirmed', methods=['POST'])
 @token_auth.login_required
@@ -48,16 +48,20 @@ def delete_confirmed_order(id):
 @api_bp.route('/orders', methods=['POST'])
 @token_auth.login_required
 def create_order():
-    try:
-        data = json_request(['product_id', 'offer'])
-        data['buyer_id'] = basic_auth.current_user().id
-    except Exception as e:
-        current_app.logger.debug(e)
-        return bad_request(str(e))
+    data = json_request(['product_id', 'offer'])
+    order = Order.get_all_filtered_by(product_id=data['product_id'],buyer_id=basic_auth.current_user().id)
+    if not order:
+        try:
+            data['buyer_id'] = basic_auth.current_user().id
+        except Exception as e:
+            current_app.logger.debug(e)
+            return bad_request(str(e))
+        else:
+            order = Order.create(**data)
+            current_app.logger.debug("CREATED order: {}".format(order.to_dict()))
+            return json_response(order.to_dict(), 201)
     else:
-        order = Order.create(**data)
-        current_app.logger.debug("CREATED order: {}".format(order.to_dict()))
-        return json_response(order.to_dict(), 201)
+        return bad_request("Order already exists")
 
     
 @api_bp.route('/orders/<int:id>', methods=['PUT'])
