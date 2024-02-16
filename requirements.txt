@@ -24,6 +24,7 @@ mixins==0.1.4
 passlib==1.7.4
 platformdirs==4.0.0
 pycparser==2.21
+PyMySQL==1.1.0
 python-dotenv==1.0.0
 SQLAlchemy==2.0.25
 sqlalchemyseed==2.0.0
