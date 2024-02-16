@@ -1,0 +1,824 @@
+{
+	"info": {
+		"_postman_id": "71bc5501-0202-4e73-8192-3a1c1d2746c0",
+		"name": "M12-API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32448488",
+		"_collection_link": "https://universal-desert-456562.postman.co/workspace/Team-MH-workspace~95754244-3e95-43fc-8c89-72ae61aedc4c/collection/32452597-71bc5501-0202-4e73-8192-3a1c1d2746c0?action=share&source=collection_link&creator=32448488"
+	},
+	"item": [
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_ENDPOINT}}/api/{{API_VERSION}}/categories",
+							"host": [
+								"{{URL_ENDPOINT}}"
+							],
+							"path": [
+								"api",
+								"{{API_VERSION}}",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Product Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_ENDPOINT}}/api/{{API_VERSION}}/products/1",
+							"host": [
+								"{{URL_ENDPOINT}}"
+							],
+							"path": [
+								"api",
+								"{{API_VERSION}}",
+								"products",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Filter Title",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_ENDPOINT}}/api/{{API_VERSION}}/products?title=at",
+							"host": [
+								"{{URL_ENDPOINT}}"
+							],
+							"path": [
+								"api",
+								"{{API_VERSION}}",
+								"products"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "at"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"Nuevo título\",\r\n  \"description\": \"Nueva descripción\",\r\n  \"photo\": \"nueva_imagen.jpg\",\r\n  \"price\": 29.99\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_ENDPOINT}}/api/{{API_VERSION}}/products/46",
+							"host": [
+								"{{URL_ENDPOINT}}"
+							],
+							"path": [
+								"api",
+								"{{API_VERSION}}",
+								"products",
+								"46"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Statuses",
+			"item": [
+				{
+					"name": "Statuses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_ENDPOINT}}/api/{{API_VERSION}}/statuses",
+							"host": [
+								"{{URL_ENDPOINT}}"
+							],
+							"path": [
+								"api",
+								"{{API_VERSION}}",
+								"statuses"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "User get Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_ENDPOINT}}/api/{{API_VERSION}}/users/44/products",
+							"host": [
+								"{{URL_ENDPOINT}}"
+							],
+							"path": [
+								"api",
+								"{{API_VERSION}}",
+								"users",
+								"44",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_ENDPOINT}}/api/{{API_VERSION}}/users/44",
+							"host": [
+								"{{URL_ENDPOINT}}"
+							],
+							"path": [
+								"api",
+								"{{API_VERSION}}",
+								"users",
+								"44"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Filter Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_ENDPOINT}}/api/{{API_VERSION}}/users?name=Pep",
+							"host": [
+								"{{URL_ENDPOINT}}"
+							],
+							"path": [
+								"api",
+								"{{API_VERSION}}",
+								"users"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Pep"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Mark14\",\r\n    \"password\": \"1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_ENDPOINT}}/api/{{API_VERSION}}/users/login",
+							"host": [
+								"{{URL_ENDPOINT}}"
+							],
+							"path": [
+								"api",
+								"{{API_VERSION}}",
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "Confirmed Orders",
+					"item": [
+						{
+							"name": "Accept order",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{URL_ENDPOINT}}/api/{{API_VERSION}}/orders/6/confirmed",
+									"host": [
+										"{{URL_ENDPOINT}}"
+									],
+									"path": [
+										"api",
+										"{{API_VERSION}}",
+										"orders",
+										"6",
+										"confirmed"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete confirmed order",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{URL_ENDPOINT}}/api/{{API_VERSION}}/orders/6/confirmed",
+									"host": [
+										"{{URL_ENDPOINT}}"
+									],
+									"path": [
+										"api",
+										"{{API_VERSION}}",
+										"orders",
+										"6",
+										"confirmed"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Make order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status CREATED', function () {",
+									"    pm.response.to.have.status(201);",
+									"    pm.response.to.be.success;",
+									"})",
+									"",
+									"pm.test('JSON response', function () {",
+									"    pm.response.to.be.json;",
+									"    pm.response.to.be.an('object');",
+									"    pm.response.to.have.jsonBody('success');",
+									"    pm.response.to.have.jsonBody('data');",
+									"    pm.response.to.not.have.jsonBody('error');",
+									"})",
+									"",
+									"pm.test('JSON response: success', function () {",
+									"    var jsonResponse = pm.response.json();",
+									"    pm.expect(jsonResponse.success).to.be.a('boolean');",
+									"    pm.expect(jsonResponse.success).to.eql(true);",
+									"})",
+									"",
+									"pm.test(\"JSON response: data\", function () {",
+									"    var jsonResponse = pm.response.json();",
+									"    pm.expect(jsonResponse.data).to.be.an(\"object\");",
+									"    pm.expect(jsonResponse.data).to.have.all.keys('buyer_id', 'created', 'id', 'offer', 'product_id');",
+									"    // Store last token to test other web services",
+									"    pm.collectionVariables.set(\"order_id\", jsonResponse.data.id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"product_id\": 46,\r\n    \"buyer_id\": 1,\r\n    \"offer\": 10.10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_ENDPOINT}}/api/{{API_VERSION}}/orders",
+							"host": [
+								"{{URL_ENDPOINT}}"
+							],
+							"path": [
+								"api",
+								"{{API_VERSION}}",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"product_id\": 2,\r\n    \"buyer_id\": 2,\r\n    \"offer\": 10.10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_ENDPOINT}}/api/{{API_VERSION}}/orders/3",
+							"host": [
+								"{{URL_ENDPOINT}}"
+							],
+							"path": [
+								"api",
+								"{{API_VERSION}}",
+								"orders",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL_ENDPOINT}}/api/{{API_VERSION}}/orders/{{order_id}}",
+							"host": [
+								"{{URL_ENDPOINT}}"
+							],
+							"path": [
+								"api",
+								"{{API_VERSION}}",
+								"orders",
+								"{{order_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Orders by Product id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL_ENDPOINT}}/api/{{API_VERSION}}/products/1/orders",
+							"host": [
+								"{{URL_ENDPOINT}}"
+							],
+							"path": [
+								"api",
+								"{{API_VERSION}}",
+								"products",
+								"1",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth token Copy",
+			"item": [
+				{
+					"name": "Create token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status CREATED\", function () {",
+									"    pm.response.to.be.success;",
+									"    pm.response.to.have.status(200)",
+									"})",
+									"",
+									"pm.test(\"JSON response\", function () {",
+									"    pm.response.to.be.json;",
+									"    pm.response.to.be.an(\"object\");",
+									"    pm.response.to.have.jsonBody(\"success\");",
+									"    pm.response.to.have.jsonBody(\"data\");",
+									"    pm.response.to.not.have.jsonBody(\"error\");",
+									"});",
+									"",
+									"pm.test(\"JSON response: success\", function () {",
+									"    var jsonResponse = pm.response.json();",
+									"    pm.expect(jsonResponse.success).to.be.a(\"boolean\");",
+									"    pm.expect(jsonResponse.success).to.eql(true);",
+									"});",
+									"",
+									"pm.test(\"JSON response: data\", function () {",
+									"    var jsonResponse = pm.response.json();",
+									"    pm.expect(jsonResponse.data).to.be.an(\"object\");",
+									"    pm.expect(jsonResponse.data).to.have.all.keys(\"token\");",
+									"    // Store last token to test other web services",
+									"    pm.collectionVariables.set(\"token\", jsonResponse.data.token);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "{{name}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{password}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL_ENDPOINT}}/api/{{API_VERSION}}/tokens",
+							"host": [
+								"{{URL_ENDPOINT}}"
+							],
+							"path": [
+								"api",
+								"{{API_VERSION}}",
+								"tokens"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create token",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL_ENDPOINT}}/api/{{API_VERSION}}/tokens",
+									"host": [
+										"{{URL_ENDPOINT}}"
+									],
+									"path": [
+										"api",
+										"{{API_VERSION}}",
+										"tokens"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "Werkzeug/2.3.7 Python/3.8.10"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 30 Jan 2024 08:08:35 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "87"
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"token\": \"0697ed128aa53677cd93db2eb3bbe556\"\n    },\n    \"success\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "Create token UNAUTHORIZED",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status UNAUTHORIZED\", function () {",
+									"    pm.response.to.be.unauthorized;",
+									"    pm.response.to.have.status(401)",
+									"})",
+									"",
+									"pm.test(\"JSON response\", function () {",
+									"    pm.response.to.be.json;",
+									"    pm.response.to.be.an(\"object\");",
+									"    pm.response.to.have.jsonBody(\"success\");",
+									"    pm.response.to.not.have.jsonBody(\"data\");",
+									"    pm.response.to.have.jsonBody(\"error\");",
+									"});",
+									"",
+									"pm.test(\"JSON response: success\", function () {",
+									"    var jsonResponse = pm.response.json();",
+									"    pm.expect(jsonResponse.success).to.be.a(\"boolean\");",
+									"    pm.expect(jsonResponse.success).to.eql(false);",
+									"});",
+									"",
+									"pm.test(\"JSON response: error\", function () {",
+									"    var jsonResponse = pm.response.json();",
+									"    pm.expect(jsonResponse.error).to.be.an(\"string\");",
+									"    pm.expect(jsonResponse.error).to.not.be.empty;",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{URL_ENDPOINT}}/api/{{API_VERSION}}/tokens",
+							"host": [
+								"{{URL_ENDPOINT}}"
+							],
+							"path": [
+								"api",
+								"{{API_VERSION}}",
+								"tokens"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create token UNAUTHORIZED",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL_ENDPOINT}}/api/{{API_VERSION}}/tokens",
+									"host": [
+										"{{URL_ENDPOINT}}"
+									],
+									"path": [
+										"api",
+										"{{API_VERSION}}",
+										"tokens"
+									]
+								}
+							},
+							"status": "UNAUTHORIZED",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Server",
+									"value": "Werkzeug/2.3.7 Python/3.8.10"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 30 Jan 2024 08:17:40 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "50"
+								},
+								{
+									"key": "WWW-Authenticate",
+									"value": "Basic realm=\"Authentication Required\""
+								},
+								{
+									"key": "Connection",
+									"value": "close"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"error\": \"Unauthorized\",\n    \"success\": false\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "name",
+			"value": "Pep1",
+			"type": "string"
+		},
+		{
+			"key": "password",
+			"value": "1",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "order_id",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

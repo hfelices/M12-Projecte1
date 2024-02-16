@@ -123,7 +123,6 @@ def register():
             mail.send_contact_msg(msg, new_user.name, new_user.email)
             form = LoginForm()
             return render_template('users/login.html', message = "Se te ha enviado un correo de verificación.", form = form )
-            return render_template('users/register.html', form = form)  
         
 @auth_bp.route('/verify/<name>/<token>', methods=["GET"])
 def verify(name, token):

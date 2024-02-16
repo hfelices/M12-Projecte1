@@ -1,4 +1,5 @@
 from . import db_manager as db
+from flask import current_app
 
 class BaseMixin():
     
@@ -18,7 +19,8 @@ class BaseMixin():
             db.session.add(self)
             db.session.commit()
             return self
-        except:
+        except Exception as e:
+            current_app.logger.debug(e)
             return False
         
     def delete(self):

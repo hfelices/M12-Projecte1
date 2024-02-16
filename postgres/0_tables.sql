@@ -93,7 +93,7 @@ CREATE TABLE "public"."products" (
 ) WITH (oids = false);
 
 INSERT INTO "products" ("id", "title", "description", "photo", "price", "category_id", "seller_id", "created", "updated") VALUES
-(1,	'Patata',	'asdasdasd asd sadweafasfasf',	'Never-Gonna-Give-You-Up-Rick-Astley.jpg',	1.00,	1,	1,	NULL,	NULL);
+(999999,	'Patata',	'asdasdasd asd sadweafasfasf',	'Never-Gonna-Give-You-Up-Rick-Astley.jpg',	1.00,	1,	1,	NULL,	NULL);
 
 DROP TABLE IF EXISTS "sqlite_sequence";
 CREATE TABLE "public"."sqlite_sequence" (
@@ -127,8 +127,8 @@ CREATE TABLE "public"."users" (
     "password" text,
     "created" timestamptz,
     "updated" timestamptz,
-    "role" character varying(255),
-    "email_token" character(20),
+    "role" character varying(255) DEFAULT 'wanner',
+    "email_token" character(50),
     "verified" character varying(5),
     "token" text,
     "token_expiration" timestamptz,
@@ -137,8 +137,8 @@ CREATE TABLE "public"."users" (
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
-INSERT INTO "users" ("id", "name", "email", "password", "created", "updated", "role", "email_token", "verified", "token", "token_expiration") VALUES
-(1,	'User1',	'correo@example.com',	'scrypt:32768:8:1$2eQQJxs7V5km6rnZ$de80c91abf635ca0fcfdd9153c66088b51004338cf8e718903ee1235e9a2ab857610f31c84ad621f6ed7dbd18e87c8334601b0dcd9e4155bff2000396925d50d',	'2024-02-15 18:45:45.957008+00',	'2024-02-15 18:45:45.957008+00',	'admin',	'token123            ',	'true',	'tokenvalor',	'2024-02-16 18:45:45.957008+00');
+INSERT INTO "users" ( "name", "email", "password", "created", "updated", "role", "email_token", "verified", "token", "token_expiration") VALUES
+(	'User1',	'correo@example.com',	'scrypt:32768:8:1$2eQQJxs7V5km6rnZ$de80c91abf635ca0fcfdd9153c66088b51004338cf8e718903ee1235e9a2ab857610f31c84ad621f6ed7dbd18e87c8334601b0dcd9e4155bff2000396925d50d',	'2024-02-15 18:45:45.957008+00',	'2024-02-15 18:45:45.957008+00',	'admin',	'token123            ',	'true',	'tokenvalor',	'2024-02-16 18:45:45.957008+00');
 
 ALTER TABLE ONLY "public"."banned_products" ADD CONSTRAINT "banned_products_product_id_fkey" FOREIGN KEY (product_id) REFERENCES products(id) NOT DEFERRABLE;
 

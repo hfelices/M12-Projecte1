@@ -125,8 +125,8 @@ CREATE TABLE `users` (
   `password` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created` datetime DEFAULT NULL,
   `updated` datetime DEFAULT NULL,
-  `role` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `email_token` char(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `role` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT 'wanner',
+  `email_token` char(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `verified` varchar(5) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `token` text COLLATE utf8mb4_unicode_ci,
   `token_expiration` datetime DEFAULT NULL
