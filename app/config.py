@@ -19,10 +19,11 @@ class Config:
     MAIL_SMTP_SERVER = environ.get('MAIL_SMTP_SERVER')
     MAIL_SMTP_PORT = int(environ.get('MAIL_SMTP_PORT'))
 
-
     # DATABASE
     DATABASE = environ.get("DATABASE")
-    SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.abspath(os.path.dirname(__file__))  + "/" + DATABASE
+    SQLALCHEMY_DATABASE_URI = environ.get('SQLALCHEMY_DATABASE_URI')
+    if (SQLALCHEMY_DATABASE_URI is None or SQLALCHEMY_DATABASE_URI == ""):
+        SQLALCHEMY_DATABASE_URI = "sqlite:///" + os.path.abspath(os.path.dirname(__file__))  + "/" + DATABASE
     SQLALCHEMY_ECHO = environ.get("SQLALCHEMY_ECHO")
 
     # LOGGING
