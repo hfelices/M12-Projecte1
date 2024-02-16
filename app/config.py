@@ -29,5 +29,3 @@ class Config:
     # LOGGING
     # environ.get('LOG_LEVEL', 'DEBUG').upper()
     LOG_LEVEL = 'DEBUG'
-            
-        

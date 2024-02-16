@@ -4,6 +4,7 @@ from flask_principal import identity_loaded, identity_changed, ActionNeed, RoleN
 from enum import Enum
 
 # Custom roles and actions
+
 class Role(str, Enum):
     admin = "admin"
     moderator = "moderator"

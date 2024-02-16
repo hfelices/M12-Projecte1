@@ -1,0 +1,30 @@
+
+version: '3'
+ 
+services:
+  db:
+    image: mysql:latest
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: kwcBOK1f5OGhrD+e
+      MYSQL_DATABASE: 2dd10_my
+      MYSQL_USER: 2dd10
+      MYSQL_PASSWORD: kwcBOK1f5OGhrD+e
+    ports:
+      - "6033:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: pma
+    links:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+    restart: always
+    ports:
+      - 8081:80
+volumes:
+  dbdata:
